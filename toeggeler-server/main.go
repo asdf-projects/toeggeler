@@ -1,44 +1,62 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"os"
+	"strconv"
 
-	"github.com/gin-gonic/gin"
-	"github.com/steinm91/toeggeler/data"
-	"github.com/steinm91/toeggeler/mock"
-	"github.com/steinm91/toeggeler/routes"
+	"github.com/joho/godotenv"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/steinm91/toeggeler/toeggeler-server/api"
 )
 
+type EnvVars struct {
+	Port     string
+	DbSource string
+	DevMode  bool
+}
+
+func loadEnvVars() *EnvVars {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Println("Could not load environment variables. Using defaults.")
+		return &EnvVars{":8080", "./toeggeler.sqlite", false}
+	}
+
+	apiPort := os.Getenv("API_PORT")
+	database := os.Getenv("DB_SOURCE")
+	devMode, err := strconv.ParseBool(os.Getenv("DEV_MODE"))
+	if err != nil {
+		devMode = false
+	}
+
+	return &EnvVars{apiPort, database, devMode}
+}
+
+func connectToDatabase(dbSource string) *sql.DB {
+	db, err := sql.Open("sqlite3", dbSource)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return db
+}
+
 func main() {
-	// only for dev, show line when errors occur
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	envVars := loadEnvVars()
 
-	// re-create database and fill with mock-data for development and testing
-	os.Remove("toeggeler.db")
+	if envVars.DevMode {
+		log.SetFlags(log.LstdFlags | log.Lshortfile)
+	}
 
-	db := connectToDatabase("toeggeler.db")
-	repo := data.NewSQLiteRepository(db)
-
+	db := connectToDatabase(envVars.DbSource)
 	migrateDatabase(db)
 
-	mock.FillWithMockData(db)
-	mock.CreateGame()
+	apiEnv := &api.Env{
+		DB:   db,
+		Port: envVars.Port,
+	}
 
-	controller := routes.New(db, repo)
-
-	r := gin.Default()
-	v1 := r.Group("/api/v1")
-
-	v1.POST("login", controller.Login)
-
-	v1.GET("players", controller.GetAllPlayers)
-	v1.GET("players/:name", controller.GetPlayerByName)
-	v1.GET("games/latest", controller.GetGame)
-	v1.POST("players", controller.CreatePlayer)
-
-	// just to test enum parsing, since that's kinda whack in go
-	v1.POST("event/parse", controller.ParseGameEvent)
-
-	r.Run()
+	api.StartApiServer(apiEnv)
 }

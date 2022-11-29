@@ -1,11 +1,10 @@
 <h1>Das sind unsere registrierten Benutzer</h1>
 <div>
     <List
-            class="user-list"
-            twoLine
-            avatarList
-            singleSelection
-            bind:selectedIndex={selectionIndex}
+        class="user-list"
+        twoLine
+        avatarList
+        singleSelection
     >
         {#each registeredUsers as user}
             <Item>
@@ -15,13 +14,13 @@
                     <SecondaryText>{user.mail}</SecondaryText>
                 </Text>
                 <Meta>
-                    <Button on:click={() => { console.log('view user detail')}}>
+                    <Button class="row-button" on:click={() => { console.log('view user detail')}}>
                         <MagnifyPlus></MagnifyPlus>
                     </Button>
-                    <Button on:click={() => prepareUserForUpdate(user)}>
+                    <Button class="row-button" on:click={() => prepareUserForUpdate(user)}>
                         <AccountEdit></AccountEdit>
                     </Button>
-                    <Button on:click={() => deleteUser(user)}>
+                    <Button class="row-button" on:click={() => deleteUser(user)}>
                         <AccountRemove></AccountRemove>
                     </Button>
                 </Meta>
@@ -29,7 +28,7 @@
         {/each}
     </List>
     {#if editMode === false }
-        <Button on:click={() => { editMode = true; }}>
+        <Button class="action-button" on:click={() => { editMode = true; }}>
             <AccountPlus></AccountPlus>
         </Button>
     {:else}
@@ -52,14 +51,17 @@
             {#if isUpdate === false}
                 <Textfield type="password" bind:value={password} label="Passwort">
                 </Textfield>
-                <Button on:click={addUser}>
+                <Button class="action-button" on:click={() => addUser()}>
                     <ContentSave></ContentSave>
                 </Button>
             {:else }
-                <Button on:click={updateUser()}>
+                <Button class="action-button" on:click={() => updateUser()}>
                     <ContentSave></ContentSave>
                 </Button>
             {/if}
+            <Button class="action-button" on:click={() => resetForm()}>
+                <Cancel></Cancel>
+            </Button>
         </div>
     {/if}
 </div>
@@ -80,6 +82,7 @@
     import AccountRemove from 'svelte-material-icons/AccountRemove.svelte';
     import MagnifyPlus from 'svelte-material-icons/MagnifyPlus.svelte';
     import ContentSave from 'svelte-material-icons/ContentSave.svelte';
+    import Cancel from 'svelte-material-icons/Cancel.svelte';
     import HelperText from '@smui/textfield/helper-text';
 
     export interface IUser {
@@ -90,15 +93,26 @@
     }
 
     const loadUsers = async (): Promise<IUser[]> => {
-        const response = await fetch('http://localhost:8080/api/users', {
+        const response = await fetch('http://localhost:8000/api/users', {
             method: 'GET'
         });
         return await response.json();
     };
 
-    const addUser = async (): Promise<IUser> => {
+    const addUser = async () => {
         const user = { username, mail: email, password };
-        const response = await fetch('http://localhost:8080/api/users', {
+        const response = await fetch('http://localhost:8000/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user)
+        });
+        const newUser = await response.json();
+        registeredUsers = [...registeredUsers, newUser];
+    };
+
+    const updateUser = async () => {
+        const user = { id, username, mail: email };
+        const response = await fetch(`http://localhost:8000/api/users/${user.username}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
@@ -106,7 +120,14 @@
         return await response.json();
     };
 
-    const prepareUserForUpdate = (user: IUser): void => {
+    const deleteUser = async (user: IUser): Promise<void> => {
+        await fetch(`http://localhost:8000/api/users/${user.username}`, {
+            method: 'DELETE'
+        });
+        registeredUsers = registeredUsers.filter(registeredUser => registeredUser.id !== user.id);
+    };
+
+    const prepareUserForUpdate = (user: IUser) => {
         editMode = true;
         isUpdate = true;
         id = user.id;
@@ -114,21 +135,9 @@
         email = user.mail;
     };
 
-    const updateUser = async (): Promise<IUser> => {
-        const user = { id, username, mail: email };
-        const response = await fetch(`http://localhost:8080/api/users/${user.username}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user)
-        });
-        return await response.json();
-    };
-
-    const deleteUser = async (user: IUser): Promise<void> => {
-        const response = await fetch(`http://localhost:8080/api/users/${user.username}`, {
-            method: 'DELETE'
-        });
-        return await response.json();
+    const resetForm = () => {
+        editMode = false;
+        isUpdate = false;
     };
 
     let registeredUsers = [];
@@ -136,11 +145,11 @@
         registeredUsers = users;
     });
 
-    let selectionIndex: number | undefined = undefined;
     let id: number | null = null;
     let username: string | null = null;
     let email: string | null = null;
     let password: string | null = null;
+
     let editMode = false;
     let isUpdate = false;
 </script>
@@ -153,5 +162,13 @@
     }
     .email {
         flex-direction: column;
+    }
+    :global(.action-button > svg), :global(.row-button > svg) {
+        height: 80%;
+        width: 80%;
+    }
+    :global(.row-button > svg){
+        height: 65%;
+        width: 65%;
     }
 </style>

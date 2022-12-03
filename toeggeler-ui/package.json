@@ -14,10 +14,13 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
+		"@material/typography": "^14.0.0",
 		"@playwright/test": "1.25.0",
 		"@smui/button": "^7.0.0-beta.0",
 		"@smui/icon-button": "^7.0.0-beta.0",
 		"@smui/list": "^7.0.0-beta.0",
+		"@smui/tab": "^7.0.0-beta.0",
+		"@smui/tab-bar": "^7.0.0-beta.0",
 		"@smui/textfield": "^7.0.0-beta.0",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",

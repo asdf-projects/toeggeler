@@ -20,14 +20,20 @@ func migrateDatabase(db *sql.DB) {
 		event_data TEXT NOT NULL,
 		event_game_id TEXT NOT NULL
 	);
+
+	CREATE TABLE IF NOT EXISTS games_played(
+		game_id TEXT NOT NULL,
+		player_id INTEGER NOT NULL,
+		team INTEGER NOT NULL,
+		position TEXT NOT NULL
+	)
+
 	`
 	_, err := db.Exec(createTables)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = db.Exec("DELETE FROM events;")
-	if err != nil {
-		log.Fatal(err)
-	}
+	//_, _ = db.Exec("DELETE FROM events")
+	//_, _ = db.Exec("DELETE FROM games_played")
 }

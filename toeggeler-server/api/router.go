@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/mattn/go-sqlite3"
@@ -26,8 +27,22 @@ func GetRouter(env *Env) *mux.Router {
 	router.HandleFunc("/api/users/{name}", env.getUser).Methods(http.MethodGet)
 
 	router.HandleFunc("/api/games", env.submitGame).Methods(http.MethodPost)
+	router.HandleFunc("/api/games", env.getGamesPlayed).Methods(http.MethodGet)
 
 	return router
+}
+
+func (env *Env) getGamesPlayed(w http.ResponseWriter, r *http.Request) {
+	playerId := r.URL.Query().Get("player")
+	if playerId == "" {
+		http.Error(w, "Please provide a player id using the query parameter 'player'", 400)
+		return
+	}
+
+	id, _ := strconv.ParseInt(playerId, 10, 64)
+	games, _ := models.GetGamesPlayedForPlayer(env.DB, id)
+
+	json.NewEncoder(w).Encode(games)
 }
 
 func (env *Env) submitGame(w http.ResponseWriter, r *http.Request) {

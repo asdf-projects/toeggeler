@@ -90,6 +90,39 @@ Defaults (both are strings):
 
 <br/>
 
+* **GET api/games?playerId={id}** to get games played by the player
+```
+// Response
+[
+    {
+        "id": "asdfasdfasdf",
+        "events: [
+            {
+                "timestamp": 1000000,
+                "event": "GAME_START",
+                "team1": {
+                    "offense": 1,
+                    "defense": 2
+                },
+                "team2: {
+                    "offense": 3,
+                    "defense": 4
+                }
+            },
+            {
+                "timestamp": 100000,
+                "event": "GOAL" | "OWN_GOAL" | "FOETELI",
+                "player": 1
+            }
+            {
+                "timestamp": 130000,
+                "event": "GAME_END"
+            }
+        ]
+    }
+]
+```
+
 * **POST /api/games** to submit a completed game
 ```
 // Request

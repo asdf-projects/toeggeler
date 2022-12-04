@@ -10,7 +10,10 @@ import (
 type GameEventType string
 
 const (
-	createGameEvent = "INSERT INTO events(event_game_id, event_data) values(?, ?)"
+	createGameEvent  = "INSERT INTO events(event_game_id, event_data) values(?, ?)"
+	createGamePlayed = "INSERT INTO games_played(game_id, player_id, team, position) values(?, ?, ?, ?)"
+	getGamesPlayed   = "SELECT game_id FROM games_played where player_id = ?"
+	getEventsForGame = "SELECT event_data FROM events where event_game_id = ?"
 )
 
 const (
@@ -55,7 +58,8 @@ type GameEvent struct {
 }
 
 type Game struct {
-	ID string `json:"id"`
+	ID     string       `json:"id"`
+	Events *[]GameEvent `json:"events,omitempty"`
 }
 
 func (e GameEvent) IsValid() error {
@@ -95,6 +99,53 @@ type Team struct {
 	Defense int64 `json:"defense"`
 }
 
+func GetGamesPlayedForPlayer(db *sql.DB, playerId int64) (*[]Game, error) {
+	rows, err := db.Query(getGamesPlayed, playerId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	games := []Game{}
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		games = append(games, Game{ID: id})
+	}
+
+	enhancedGames := []Game{}
+	for _, game := range games {
+		rows, err = db.Query(getEventsForGame, game.ID)
+		if err != nil {
+			return nil, err
+		}
+		defer rows.Close()
+
+		var events []GameEvent
+		for rows.Next() {
+			var eventString string
+			var event GameEvent
+			if err := rows.Scan(&eventString); err != nil {
+				return nil, err
+			}
+			err = json.Unmarshal([]byte(eventString), &event)
+			if err != nil {
+				return nil, err
+			}
+
+			fmt.Println(event)
+			events = append(events, event)
+		}
+
+		g := Game{ID: game.ID, Events: &events}
+		enhancedGames = append(enhancedGames, g)
+	}
+
+	return &enhancedGames, nil
+}
+
 func SubmitGame(db *sql.DB, gameId string, gameEvents *[]GameEvent) (*Game, error) {
 	var err error
 	for _, event := range *gameEvents {
@@ -115,5 +166,32 @@ func SubmitGame(db *sql.DB, gameId string, gameEvents *[]GameEvent) (*Game, erro
 		return nil, err
 	}
 
+	updateGamesPlayed(db, gameId, gameEvents)
+
 	return &Game{ID: gameId}, nil
+}
+
+func updateGamesPlayed(db *sql.DB, gameId string, gameEvents *[]GameEvent) {
+	var startEvent GameEvent
+	for _, event := range *gameEvents {
+		if event.Event == GAME_START {
+			startEvent = event
+			break
+		}
+	}
+
+	addGamePlayedForPlayer(db, gameId, startEvent.Team1.Offense, 1, "offense")
+	addGamePlayedForPlayer(db, gameId, startEvent.Team1.Defense, 1, "defense")
+	addGamePlayedForPlayer(db, gameId, startEvent.Team2.Offense, 2, "offense")
+	addGamePlayedForPlayer(db, gameId, startEvent.Team2.Defense, 2, "defense")
+
+	fmt.Println("Updated games played")
+}
+
+func addGamePlayedForPlayer(db *sql.DB, gameId string, playerId int64, team int, position string) {
+	_, err := db.Exec(createGamePlayed, gameId, playerId, team, position)
+	if err != nil {
+		fmt.Println("Could not update games_played for player with ID ", playerId)
+		fmt.Println(err)
+	}
 }

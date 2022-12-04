@@ -4,12 +4,14 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/mattn/go-sqlite3"
+	"github.com/segmentio/ksuid"
 	"github.com/steinm91/toeggeler/toeggeler-server/models"
 )
 
@@ -23,7 +25,45 @@ func GetRouter(env *Env) *mux.Router {
 	router.HandleFunc("/api/users/{name}", env.deleteUser).Methods(http.MethodDelete)
 	router.HandleFunc("/api/users/{name}", env.getUser).Methods(http.MethodGet)
 
+	router.HandleFunc("/api/games", env.submitGame).Methods(http.MethodPost)
+
 	return router
+}
+
+func (env *Env) submitGame(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var gameId ksuid.KSUID
+
+	reqBody, _ := ioutil.ReadAll(r.Body)
+	var gameEvents []models.GameEvent
+	json.Unmarshal(reqBody, &gameEvents)
+
+	gameId, err = ksuid.NewRandom()
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
+
+	for _, event := range gameEvents {
+		err = event.IsValid()
+		if err != nil {
+			break
+		}
+	}
+
+	if err != nil {
+		http.Error(w, "Invalid event provided", 400)
+		return
+	}
+
+	game, err := models.SubmitGame(env.DB, gameId.String(), &gameEvents)
+	if err != nil {
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
+
+	json.NewEncoder(w).Encode(game)
 }
 
 func (env *Env) getUsers(w http.ResponseWriter, r *http.Request) {

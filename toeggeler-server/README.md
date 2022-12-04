@@ -21,11 +21,17 @@ Defaults (both are strings):
 * Port: **:8080**
 * Database file: **./toeggeler.sqlite**
 
-## Using the API
 
-Currently only 4 operations are supported:
+# Using the API
 
-* **GET /api/users** to get all users
+<details>
+
+<summary>User Management</summary>
+
+<br />
+
+**GET /api/users** to get all users
+
 ```
 // Response 
 [
@@ -77,3 +83,45 @@ Currently only 4 operations are supported:
 }
 ```
 * **DELETE /api/users/{name}** to delete an existing user
+</details>
+
+<details>
+<summary>Game Management</summary>
+
+<br/>
+
+* **POST /api/games** to submit a completed game
+```
+// Request
+[
+    // "GAME_START" requires "team1" and "team2" properties 
+    {
+        "timestamp": 1000000, // unix timestamp
+        "event": "GAME_START",
+        "team1": {
+            "offense": 1,
+            "defense": 2
+        },
+        "team2: {
+            "offense": 3,
+            "defense": 4
+        }
+    },
+    // any type of goal event requires the player id 
+    {
+        "timestamp": 100000,
+        "event": "GOAL" | "OWN_GOAL" | "FOETELI",
+        "player": 1
+    }
+    {
+        "timestamp": 130000,
+        "event": "GAME_END"
+    }
+]
+
+// Response
+{
+    "id": "IdIdIdIdId"
+}
+```
+</details>

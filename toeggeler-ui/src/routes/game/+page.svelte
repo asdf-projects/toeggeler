@@ -2,29 +2,13 @@
 {#if !gameEnded}
     <p>Aktueller Spielstand: {scoreTeam1}:{scoreTeam2}</p>
     <LayoutGrid>
-        <Cell span={6}>
-            {#await team1Ofense then player}
-                <Button class="player" on:click={() => scoreGoal(player.id)}>{ player.username }</Button>
-            {/await}
-        </Cell>
-        <Cell span={6}>
-            {#await team1Defense then player}
-                <Button class="player" on:click={() => scoreGoal(player.id)}>{ player.username }</Button>
-            {/await}
-        </Cell>
-        <Cell span="{12}">
-
-        </Cell>
-        <Cell span={6}>
-            {#await team2Defense then player}
-                <Button class="player" on:click={() => scoreGoal(player.id)}>{ player.username }</Button>
-            {/await}
-        </Cell>
-        <Cell span={6}>
-            {#await team2Ofense then player}
-                <Button class="player" on:click={() => scoreGoal(player.id)}>{ player.username }</Button>
-            {/await}
-        </Cell>
+        {#await playerData then players}
+            {#each players as player}
+                <Cell span={6}>
+                    <Button class="player" on:click={() => scoreGoal(player.id)}>{ player.username }</Button>
+                </Cell>
+            {/each}
+        {/await}
     </LayoutGrid>
 {:else}
     <p>Spiel beendet. Schlussstand: {scoreTeam1}:{scoreTeam2}</p>
@@ -71,10 +55,13 @@
         const users: IUser[] = await response.json();
         return users.filter(user => user.id === id)[0];
     };
-    const team1Ofense = getPlayerData(team1.ofense);
-    const team1Defense = getPlayerData(team1.defense);
-    const team2Ofense = getPlayerData(team2.ofense);
-    const team2Defense = getPlayerData(team2.defense);
+
+    const playerData = Promise.all([
+        getPlayerData(team1.ofense),
+        getPlayerData(team1.defense),
+        getPlayerData(team2.defense),
+        getPlayerData(team2.ofense)
+    ]);
 
     const scoreGoal = (player: number) => {
         const event: IGameEvent = { event: EventType.GOAL, timestamp: Date.now(),  player }
@@ -115,6 +102,3 @@
         team2
     });
 </script>
-
-<style>
-</style>

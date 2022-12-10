@@ -3,9 +3,34 @@
     <p>Aktueller Spielstand: {scoreTeam1}:{scoreTeam2}</p>
     <LayoutGrid>
         {#await playerData then players}
-            {#each players as player}
+            {#each players as player, index}
                 <Cell span={6}>
-                    <Button class="player" on:click={() => scoreGoal(player.id)}>{ player.username }</Button>
+                    {#if (mousedownTimer?.duration >= 500 && mousedownTimer?.buttonIndex === index)}
+                        <div class="overlay">
+                            <Button on:click={() => scoreGoal(player.id, EventType.GOAL)}>
+                                <Icon>
+                                    <Soccer></Soccer>
+                                </Icon>
+                            </Button>
+                            <Button on:click={() => scoreGoal(player.id, EventType.FOETELI)}>
+                                <Icon>
+                                    <CameraWireless></CameraWireless>
+                                </Icon>
+                            </Button>
+                            <Button on:click={() => scoreGoal(player.id, EventType.OWN_GOAL)}>
+                                <Icon>
+                                    <SkipBackward></SkipBackward>
+                                </Icon>
+                            </Button>
+                        </div>
+                    {:else}
+                        <Button
+                                class="player"
+                                on:click={() => scoreGoal(player.id)}
+                                on:mousedown={() => mouseDownTimerStart(index) }
+                                on:mouseup={() => mousedownTimerStop() }
+                        >{ player.username }</Button>
+                    {/if}
                 </Cell>
             {/each}
         {/await}
@@ -16,7 +41,10 @@
 
 <script lang="ts">
     import LayoutGrid, { Cell } from '@smui/layout-grid';
-    import Button from '@smui/button';
+    import Button, { Icon } from '@smui/button';
+    import CameraWireless from 'svelte-material-icons/CameraWireless.svelte';
+    import SkipBackward from 'svelte-material-icons/SkipBackward.svelte';
+    import Soccer from 'svelte-material-icons/Soccer.svelte';
 
     export interface ITeam {
         ofense: number;
@@ -46,6 +74,7 @@
     let scoreTeam2 = 0;
     const currentEvents = [];
     let gameEnded = false;
+    let mousedownTimer: { start: number; duration: number; buttonIndex: number; };
     const team1: ITeam = { ofense: 1, defense: 2 };
     const team2: ITeam = { ofense: 3, defense: 4 };
     const getPlayerData = async (id: number): Promise<IUser> => {
@@ -63,15 +92,31 @@
         getPlayerData(team2.ofense)
     ]);
 
-    const scoreGoal = (player: number) => {
-        const event: IGameEvent = { event: EventType.GOAL, timestamp: Date.now(),  player }
+    const mouseDownTimerStart = (buttonIndex: number) => {
+        mousedownTimer = { start: Date.now(), duration: 0, buttonIndex: buttonIndex };
+    };
+    const mousedownTimerStop = () => {
+        mousedownTimer.duration = Date.now() - mousedownTimer.start;
+    }
+    const updateScore = (player: number, eventType: EventType) => {
+        if (eventType === EventType.OWN_GOAL) {
+            if (player === team1.ofense || player === team1.defense) {
+                scoreTeam2++;
+            } else {
+                scoreTeam1++;
+            }
+        } else {
+            if (player === team1.ofense || player === team1.defense) {
+                scoreTeam1++;
+            } else {
+                scoreTeam2++;
+            }
+        }
+    };
+    const scoreGoal = (player: number, eventType: EventType = EventType.GOAL) => {
+        const event: IGameEvent = { event: eventType, timestamp: Date.now(),  player }
         storeEvent(event);
-        if (team1.ofense === player || team1.defense === player) {
-            scoreTeam1++;
-        }
-        if (team2.ofense === player || team2.defense === player) {
-            scoreTeam2++;
-        }
+        updateScore(player, eventType);
         if (scoreTeam1 === 8 || scoreTeam2 === 8) {
             storeEvent({
                 event: EventType.GAME_END,
@@ -80,6 +125,7 @@
             gameEnded = true;
             shareGameResult(currentEvents);
         }
+        mouseDownTimerStart(undefined);
     };
     const storeEvent = (event: IGameEvent) => {
         console.log(JSON.stringify(event));

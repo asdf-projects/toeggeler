@@ -112,7 +112,7 @@
 
     const updateUser = async () => {
         const user = { id, username, mail: email };
-        const response = await fetch(`http://localhost:8000/api/users/${user.username}`, {
+        const response = await fetch(`http://localhost:8000/api/users/${user.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
@@ -121,7 +121,7 @@
     };
 
     const deleteUser = async (user: IUser): Promise<void> => {
-        await fetch(`http://localhost:8000/api/users/${user.username}`, {
+        await fetch(`http://localhost:8000/api/users/${user.id}`, {
             method: 'DELETE'
         });
         registeredUsers = registeredUsers.filter(registeredUser => registeredUser.id !== user.id);

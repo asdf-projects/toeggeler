@@ -24,10 +24,10 @@ type UpdateUserRequest struct {
 
 const (
 	readUsersStmt  = "SELECT user_id, user_name, user_mail FROM users"
-	readUserStmt   = readUsersStmt + " WHERE user_name = ?"
+	readUserStmt   = readUsersStmt + " WHERE user_id = ?"
 	createUserStmt = "INSERT INTO users(user_name, user_mail, user_password) values(?, ?, ?)"
-	updateUserStmt = "UPDATE users SET user_mail = ? WHERE user_name = ?"
-	deleteUserStmt = "DELETE FROM users WHERE user_name = ?"
+	updateUserStmt = "UPDATE users SET user_mail = ? WHERE user_id = ?"
+	deleteUserStmt = "DELETE FROM users WHERE user_id = ?"
 )
 
 func CreateUser(db *sql.DB, userRequest CreateUserRequest) (User, error) {
@@ -66,8 +66,8 @@ func GetUsers(db *sql.DB) ([]User, error) {
 	return users, nil
 }
 
-func GetUser(db *sql.DB, name string) (User, error) {
-	row := db.QueryRow(readUserStmt, name)
+func GetUser(db *sql.DB, id string) (User, error) {
+	row := db.QueryRow(readUserStmt, id)
 
 	var user User
 	err := row.Scan(&user.Id, &user.Username, &user.Mail)
@@ -78,8 +78,8 @@ func GetUser(db *sql.DB, name string) (User, error) {
 	return user, nil
 }
 
-func UpdateUser(db *sql.DB, name string, userRequest UpdateUserRequest) (User, error) {
-	_, err := db.Exec(updateUserStmt, userRequest.Mail, name)
+func UpdateUser(db *sql.DB, id string, userRequest UpdateUserRequest) (User, error) {
+	_, err := db.Exec(updateUserStmt, userRequest.Mail, id)
 
 	log.Println(err)
 
@@ -87,10 +87,10 @@ func UpdateUser(db *sql.DB, name string, userRequest UpdateUserRequest) (User, e
 		return User{}, err
 	}
 
-	return GetUser(db, name)
+	return GetUser(db, id)
 }
 
-func DeleteUser(db *sql.DB, name string) error {
-	_, err := db.Exec(deleteUserStmt, name)
+func DeleteUser(db *sql.DB, id string) error {
+	_, err := db.Exec(deleteUserStmt, id)
 	return err
 }

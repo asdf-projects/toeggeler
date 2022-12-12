@@ -22,9 +22,9 @@ func GetRouter(env *Env) *mux.Router {
 
 	router.HandleFunc("/api/users", env.getUsers).Methods(http.MethodGet)
 	router.HandleFunc("/api/users", env.createUser).Methods(http.MethodPost)
-	router.HandleFunc("/api/users/{name}", env.updateUser).Methods(http.MethodPut)
-	router.HandleFunc("/api/users/{name}", env.deleteUser).Methods(http.MethodDelete)
-	router.HandleFunc("/api/users/{name}", env.getUser).Methods(http.MethodGet)
+	router.HandleFunc("/api/users/{id}", env.updateUser).Methods(http.MethodPut)
+	router.HandleFunc("/api/users/{id}", env.deleteUser).Methods(http.MethodDelete)
+	router.HandleFunc("/api/users/{id}", env.getUser).Methods(http.MethodGet)
 
 	router.HandleFunc("/api/games", env.submitGame).Methods(http.MethodPost)
 	router.HandleFunc("/api/games", env.getGamesPlayed).Methods(http.MethodGet)
@@ -94,13 +94,13 @@ func (env *Env) getUsers(w http.ResponseWriter, r *http.Request) {
 
 func (env *Env) getUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	name := vars["name"]
+	id := vars["id"]
 
-	user, err := models.GetUser(env.DB, name)
+	user, err := models.GetUser(env.DB, id)
 	if err != nil {
 		log.Print(err)
 		if errors.Is(err, sql.ErrNoRows) {
-			http.Error(w, "User '"+name+"' not found", 404)
+			http.Error(w, "User with id '"+id+"' not found", 404)
 		} else {
 			http.Error(w, "", 500)
 		}
@@ -134,13 +134,13 @@ func (env *Env) createUser(w http.ResponseWriter, r *http.Request) {
 
 func (env *Env) updateUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	name := vars["name"]
+	id := vars["id"]
 
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var userRequest models.UpdateUserRequest
 	json.Unmarshal(reqBody, &userRequest)
 
-	user, err := models.UpdateUser(env.DB, name, userRequest)
+	user, err := models.UpdateUser(env.DB, id, userRequest)
 	if err != nil {
 		log.Print(err)
 
@@ -159,14 +159,14 @@ func (env *Env) updateUser(w http.ResponseWriter, r *http.Request) {
 
 func (env *Env) deleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	name := vars["name"]
+	id := vars["id"]
 
-	err := models.DeleteUser(env.DB, name)
+	err := models.DeleteUser(env.DB, id)
 	if err != nil {
 		log.Print(err)
 
 		if errors.Is(err, sql.ErrNoRows) {
-			http.Error(w, " User '"+name+"' not found.", 404)
+			http.Error(w, " User '"+id+"' not found.", 404)
 		} else {
 			http.Error(w, "", 500)
 		}

@@ -1,13 +1,12 @@
-<h1>Spielmodus</h1>
 <div class="game-selection">
-    <Select bind:value={selectedGameType} label="Spielmodus">
+    <Select bind:value={selectedGameType} label="{ $_('Play.GameType.Selection') }">
         {#each gameTypes as gameType}
-            <Option value={gameType}>{gameType.label}</Option>
+            <Option value={gameType}>{ $_(gameType.label) }</Option>
         {/each}
     </Select>
-    <Select bind:value={selectedGameEndType} label="Spielende">
+    <Select bind:value={selectedGameEndType} label="{ $_('Play.GameEndType.Selection') }">
         {#each gameEndTypes as gameEndType}
-            <Option value={gameEndType}>{gameEndType.label}</Option>
+            <Option value={ gameEndType }>{ $_(gameEndType.label) }</Option>
         {/each}
     </Select>
     {#if selectedGameEndType?.key === 'RESULT'}
@@ -26,7 +25,7 @@
                 slot="label"
                 style="padding-right: 12px; width: max-content; display: block;"
             >
-                Anzahl Tore zum Sieg: {numberOfGoals}
+                { $_('Play.NumberOfGoals') } { numberOfGoals }
             </span>
         </FormField>
     {/if}
@@ -34,11 +33,12 @@
         <Icon>
             <Play></Play>
         </Icon>
-        <Label>Spiel Starten</Label>
+        <Label>{ $_('Play.StartGame') }</Label>
     </Button>
 </div>
 
 <script lang="ts">
+    import { _ } from 'svelte-i18n';
     import Select, { Option } from '@smui/select';
     import FormField from '@smui/form-field';
     import Slider from '@smui/slider';
@@ -47,17 +47,17 @@
 
     const gameTypes = [{
         key: '1vs1',
-        label: '1 gegen 1'
+        label: 'Play.GameType.1vs1'
     }, {
         key: '2vs2',
-        label: '2 gegen 2'
+        label: 'Play.GameType.2vs2'
     }];
     const gameEndTypes = [{
         key: 'TIME',
-        label: 'Nach Ablauf der Zeit'
+        label: 'Play.GameEndType.Time'
     }, {
         key: 'RESULT',
-        label: 'Nach Anzahl Tore'
+        label: 'Play.GameEndType.Result'
     }];
 
     let selectedGameType = gameTypes[1];

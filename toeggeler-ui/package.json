@@ -45,6 +45,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"svelte-i18n": "^3.6.0",
 		"svelte-material-icons": "^2.0.4",
 		"svelte-material-ui": "^7.0.0-beta.0"
 	}

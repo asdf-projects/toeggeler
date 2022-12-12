@@ -1,4 +1,3 @@
-<h1>Das sind unsere registrierten Benutzer</h1>
 <div>
     <List
         class="user-list"
@@ -33,18 +32,18 @@
         </Button>
     {:else}
         <div class="user-edit">
-            <Textfield bind:value={username} label="Benutzername">
+            <Textfield bind:value={username} label="{ $_('Users.Edit.Username') }">
             </Textfield>
             <span class="email">
                 <Textfield
                     type="email"
                     updateInvalid
                     bind:value={email}
-                    label="E-Mail"
+                    label="{ $_('Users.Edit.Email') }"
                     input$autocomplete="email"
                 >
                     <HelperText validationMsg slot="helper">
-                        Ungültige E-Mail Adresse
+                        { $_('Users.Edit.InvalidEmail') }
                     </HelperText>
                 </Textfield>
             </span>
@@ -67,6 +66,7 @@
 </div>
 
 <script lang="ts">
+    import { _ } from 'svelte-i18n';
     import List, {
         Item,
         Graphic,

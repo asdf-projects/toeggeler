@@ -1,27 +1,33 @@
-<nav>
-    <TabBar {tabs} let:tab bind:active>
-        <Tab {tab} href="{tab.target}">
-            <Icon>
-                {#if tab.icon === 'SoccerField'}
-                    <SoccerField></SoccerField>
-                {/if}
-                {#if tab.icon === 'AccountCircle'}
-                    <AccountCircle></AccountCircle>
-                {/if}
-                {#if tab.icon === 'Trophy'}
-                    <Trophy></Trophy>
-                {/if}
-                {#if tab.icon === 'AccountGroup'}
-                    <AccountGroup></AccountGroup>
-                {/if}
-            </Icon>
-            <Label>{tab.label}</Label>
-        </Tab>
-    </TabBar>
-</nav>
-<slot></slot>
+{#if $isLoading}
+    <p>Wait for Translations...</p>
+{:else}
+    <nav>
+        <TabBar {tabs} let:tab bind:active>
+            <Tab {tab} href="{tab.target}">
+                <Icon>
+                    {#if tab.icon === 'SoccerField'}
+                        <SoccerField></SoccerField>
+                    {/if}
+                    {#if tab.icon === 'AccountCircle'}
+                        <AccountCircle></AccountCircle>
+                    {/if}
+                    {#if tab.icon === 'Trophy'}
+                        <Trophy></Trophy>
+                    {/if}
+                    {#if tab.icon === 'AccountGroup'}
+                        <AccountGroup></AccountGroup>
+                    {/if}
+                </Icon>
+                <Label>{ $_(tab.label) }</Label>
+            </Tab>
+        </TabBar>
+    </nav>
+    <slot></slot>
+{/if}
 
 <script lang="ts">
+    import '$lib/i18n';
+    import { _, isLoading } from 'svelte-i18n'
     import Tab, { Icon, Label } from '@smui/tab';
     import TabBar from '@smui/tab-bar';
     import SoccerField from 'svelte-material-icons/SoccerField.svelte';
@@ -32,22 +38,22 @@
     let tabs = [
         {
             icon: 'SoccerField',
-            label: 'Spielen',
+            label: 'Menu.Play',
             target: '/play'
         },
         {
             icon: 'Trophy',
-            label: 'Rangliste',
+            label: 'Menu.Scoreboard',
             target: '/scoreboard'
         },
         {
             icon: 'AccountGroup',
-            label: 'Benutzer',
+            label: 'Menu.Users',
             target: '/users'
         },
         {
             icon: 'AccountCircle',
-            label: 'Benutzer-Administration',
+            label: 'Menu.Administration',
             target: '/administration'
         }
     ];

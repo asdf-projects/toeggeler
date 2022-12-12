@@ -1,6 +1,6 @@
 <h1>GO GO GO</h1>
 {#if !gameEnded}
-    <p>Aktueller Spielstand: {scoreTeam1}:{scoreTeam2}</p>
+    <p>{ $_('Game.Score')} {scoreTeam1}:{scoreTeam2}</p>
     <LayoutGrid>
         {#await playerData then players}
             {#each players as player, index}
@@ -36,10 +36,11 @@
         {/await}
     </LayoutGrid>
 {:else}
-    <p>Spiel beendet. Schlussstand: {scoreTeam1}:{scoreTeam2}</p>
+    <p>{ $_('Game.EndOfGame') } { scoreTeam1 }:{ scoreTeam2 }</p>
 {/if}
 
 <script lang="ts">
+    import { _ } from 'svelte-i18n';
     import LayoutGrid, { Cell } from '@smui/layout-grid';
     import Button, { Icon } from '@smui/button';
     import CameraWireless from 'svelte-material-icons/CameraWireless.svelte';

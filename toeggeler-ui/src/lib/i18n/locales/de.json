@@ -1,0 +1,33 @@
+{
+  "Menu": {
+    "Play": "Spielen",
+    "Scoreboard": "Rangliste",
+    "Users": "Benutzer",
+    "Administration": "Benutzer-Administration"
+  },
+  "Users": {
+    "Edit": {
+      "Username": "Benutzername",
+      "Email": "E-Mail",
+      "InvalidEmail": "Ungültige E-Mail Adresse"
+    }
+  },
+  "Play": {
+    "NumberOfGoals": "Anzahl Tore zum Sieg: ",
+    "StartGame": "Spiel starten",
+    "GameType": {
+      "Selection": "Spielmodus",
+      "1vs1": "1 gegen 1",
+      "2vs2": "2 gegen 2"
+    },
+    "GameEndType": {
+      "Selection": "Spielende",
+      "Time": "Nach Ablauf der Zeit",
+      "Result": "Nach Anzahl Tore"
+    }
+  },
+  "Game": {
+    "Score": "Aktueller Spielstand:",
+    "EndOfGame": "Spiel beendet. Schlussstand:"
+  }
+}

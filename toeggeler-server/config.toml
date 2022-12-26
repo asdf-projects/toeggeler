@@ -1,0 +1,8 @@
+[common]
+dev = true
+
+[server]
+port = 8080
+
+[database]
+file = "toeggeler.sqlite"

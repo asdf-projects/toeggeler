@@ -1,61 +1,64 @@
 package main
 
 import (
-	"database/sql"
 	"log"
-	"os"
-	"strconv"
 
-	"github.com/joho/godotenv"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/pelletier/go-toml"
 	"github.com/steinm91/toeggeler/toeggeler-server/api"
+	"github.com/steinm91/toeggeler/toeggeler-server/eval"
+	"github.com/steinm91/toeggeler/toeggeler-server/models"
 )
 
 type EnvVars struct {
-	Port     string
-	DbSource string
-	DevMode  bool
+	Port    int64
+	DBFile  string
+	DevMode bool
 }
 
-func loadEnvVars() *EnvVars {
-	err := godotenv.Load(".env")
+func loadConfig() EnvVars {
+	config, err := toml.LoadFile("config.toml")
 	if err != nil {
-		log.Println("Could not load environment variables. Using defaults.")
-		return &EnvVars{":8080", "./toeggeler.sqlite", false}
+		panic(err)
 	}
 
-	apiPort := os.Getenv("API_PORT")
-	database := os.Getenv("DB_SOURCE")
-	devMode, err := strconv.ParseBool(os.Getenv("DEV_MODE"))
-	if err != nil {
-		devMode = false
+	devMode := config.Get("common.dev").(bool)
+	port := config.Get("server.port").(int64)
+	dbFile := config.Get("database.file").(string)
+
+	return EnvVars{
+		Port:    port,
+		DBFile:  dbFile,
+		DevMode: devMode,
 	}
-
-	return &EnvVars{apiPort, database, devMode}
-}
-
-func connectToDatabase(dbSource string) *sql.DB {
-	db, err := sql.Open("sqlite3", dbSource)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return db
 }
 
 func main() {
-	envVars := loadEnvVars()
+	envVars := loadConfig()
 
 	if envVars.DevMode {
 		log.SetFlags(log.LstdFlags | log.Lshortfile)
 	}
 
-	db := connectToDatabase(envVars.DbSource)
-	migrateDatabase(db)
+	db, err := models.Open(envVars.DBFile)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	err = models.Migrate(db)
+	if err != nil {
+		panic(err)
+	}
+
+	engineEnv := &eval.Env{DB: db}
+	evalEngine := eval.NewEvalEngine(engineEnv)
 
 	apiEnv := &api.Env{
-		DB:   db,
-		Port: envVars.Port,
+		DB:         db,
+		Port:       envVars.Port,
+		EvalEngine: evalEngine,
+		DevMode:    envVars.DevMode,
 	}
 
 	api.StartApiServer(apiEnv)

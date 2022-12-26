@@ -48,7 +48,7 @@
     import Soccer from 'svelte-material-icons/Soccer.svelte';
 
     export interface ITeam {
-        ofense: number;
+        offense: number;
         defense: number;
     }
     export interface IUser {
@@ -76,8 +76,8 @@
     const currentEvents = [];
     let gameEnded = false;
     let mousedownTimer: { start: number; duration: number; buttonIndex: number; };
-    const team1: ITeam = { ofense: 1, defense: 2 };
-    const team2: ITeam = { ofense: 3, defense: 4 };
+    const team1: ITeam = { offense: 1, defense: 2 };
+    const team2: ITeam = { offense: 3, defense: 4 };
     const getPlayerData = async (id: number): Promise<IUser> => {
         const response = await fetch(`http://localhost:8000/api/users`, {
             method: 'GET'
@@ -87,10 +87,10 @@
     };
 
     const playerData = Promise.all([
-        getPlayerData(team1.ofense),
+        getPlayerData(team1.offense),
         getPlayerData(team1.defense),
         getPlayerData(team2.defense),
-        getPlayerData(team2.ofense)
+        getPlayerData(team2.offense)
     ]);
 
     const mouseDownTimerStart = (buttonIndex: number) => {
@@ -101,13 +101,13 @@
     }
     const updateScore = (player: number, eventType: EventType) => {
         if (eventType === EventType.OWN_GOAL) {
-            if (player === team1.ofense || player === team1.defense) {
+            if (player === team1.offense || player === team1.defense) {
                 scoreTeam2++;
             } else {
                 scoreTeam1++;
             }
         } else {
-            if (player === team1.ofense || player === team1.defense) {
+            if (player === team1.offense || player === team1.defense) {
                 scoreTeam1++;
             } else {
                 scoreTeam2++;

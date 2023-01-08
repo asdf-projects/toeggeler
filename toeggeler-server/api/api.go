@@ -14,6 +14,8 @@ type Env struct {
 	DB         *sql.DB
 	Port       int64
 	EvalEngine eval.EvalEngine
+	SecretKey  string
+	EnableJwt  bool
 }
 
 func StartApiServer(env *Env) {
@@ -25,11 +27,23 @@ func StartApiServer(env *Env) {
 
 	r := gin.Default()
 
+	if env.EnableJwt {
+		r.Use(JwtAuthMiddleware(env.SecretKey))
+	}
+
+	securityRoutes(env, r)
 	userRoutes(env, r)
 	gameRoutes(env, r)
 	evalEngineRoutes(env, r)
 
 	r.Run()
+}
+
+func securityRoutes(env *Env, r *gin.Engine) {
+	userService := models.UserService{DB: env.DB}
+	securityCtrl := controllers.SecurityController{UserService: &userService, SecretKey: env.SecretKey}
+
+	r.POST("/api/authenticate", securityCtrl.Authenticate)
 }
 
 func userRoutes(env *Env, r *gin.Engine) {

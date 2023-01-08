@@ -32,6 +32,7 @@ var ErrUserNotFound = errors.New("User not found")
 const (
 	readUsersStmt  = "SELECT user_id, user_name, user_mail FROM users"
 	readUserStmt   = readUsersStmt + " WHERE user_id = ?"
+	readUserPwd    = "SELECT user_password FROM users WHERE user_name = ?"
 	createUserStmt = "INSERT INTO users(user_name, user_mail, user_password) values($1, $2, $3)"
 	updateUserStmt = "UPDATE users SET user_mail = ? WHERE user_id = ?"
 	deleteUserStmt = "DELETE FROM users WHERE user_id = ?"
@@ -103,6 +104,21 @@ func (us *UserService) GetUser(id string) (*User, error) {
 	}
 
 	return &user, nil
+}
+
+func (us *UserService) GetUserPassword(username string) (*string, error) {
+	row := us.DB.QueryRow(readUserPwd, username)
+
+	var hashedPassword string
+	err := row.Scan(&hashedPassword)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		return nil, err
+	}
+
+	return &hashedPassword, nil
 }
 
 func (us *UserService) UpdateUser(id string, mail string) (*User, error) {

@@ -11,9 +11,11 @@ import (
 )
 
 type EnvVars struct {
-	Port    int64
-	DBFile  string
-	DevMode bool
+	Port      int64
+	DBFile    string
+	DevMode   bool
+	SecretKey string
+	EnableJwt bool
 }
 
 func loadConfig() EnvVars {
@@ -25,11 +27,17 @@ func loadConfig() EnvVars {
 	devMode := config.Get("common.dev").(bool)
 	port := config.Get("server.port").(int64)
 	dbFile := config.Get("database.file").(string)
+	secretKey := config.Get("server.secret").(string)
+	enableJwt := config.Get("server.enableJwt").(bool)
+
+	log.Println(enableJwt)
 
 	return EnvVars{
-		Port:    port,
-		DBFile:  dbFile,
-		DevMode: devMode,
+		Port:      port,
+		DBFile:    dbFile,
+		DevMode:   devMode,
+		SecretKey: secretKey,
+		EnableJwt: enableJwt,
 	}
 }
 
@@ -59,6 +67,8 @@ func main() {
 		Port:       envVars.Port,
 		EvalEngine: evalEngine,
 		DevMode:    envVars.DevMode,
+		SecretKey:  envVars.SecretKey,
+		EnableJwt:  envVars.EnableJwt,
 	}
 
 	api.StartApiServer(apiEnv)

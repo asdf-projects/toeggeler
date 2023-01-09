@@ -7,7 +7,7 @@
             label="{ $_(placeholder) }"
         >
             {#each users as user}
-                <Option value={user}>{user.username} ({user.mail})</Option>
+                <Option value={user.id}>{user.username} ({user.mail})</Option>
             {/each}
         </Select>
     {/await}
@@ -17,15 +17,9 @@
 
     import { _ } from 'svelte-i18n';
     import Select, {Option} from "@smui/select";
+    import type {IUser} from "../../app";
 
-    export interface IUser {
-        id: number;
-        username: string;
-        mail: string;
-    }
-
-
-    export let selectedUser: IUser;
+    export let selectedUser: number;
     export let placeholder: string;
 
     const loadUsers = async (): Promise<IUser[]> => {

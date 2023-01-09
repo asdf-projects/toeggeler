@@ -84,13 +84,7 @@
     import ContentSave from 'svelte-material-icons/ContentSave.svelte';
     import Cancel from 'svelte-material-icons/Cancel.svelte';
     import HelperText from '@smui/textfield/helper-text';
-
-    export interface IUser {
-        id: number;
-        username: string;
-        mail: string;
-        password: string;
-    }
+    import type {IUser} from "../../app";
 
     const loadUsers = async (): Promise<IUser[]> => {
         const response = await fetch('http://localhost:8000/api/users', {

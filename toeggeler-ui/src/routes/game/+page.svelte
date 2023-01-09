@@ -32,6 +32,11 @@
                         >{ player.username }</Button>
                     {/if}
                 </Cell>
+                {#if index===1}
+                    <Cell span={12}>
+                        <SoccerField width="70%" height="50px"></SoccerField>
+                    </Cell>
+                {/if}
             {/each}
         {/await}
     </LayoutGrid>
@@ -46,15 +51,13 @@
     import CameraWireless from 'svelte-material-icons/CameraWireless.svelte';
     import SkipBackward from 'svelte-material-icons/SkipBackward.svelte';
     import Soccer from 'svelte-material-icons/Soccer.svelte';
+    import SoccerField from 'svelte-material-icons/SoccerField.svelte';
+    import {page} from "$app/stores";
+    import type {IUser} from "../../app";
 
     export interface ITeam {
         offense: number;
         defense: number;
-    }
-    export interface IUser {
-        id: number,
-        username: string;
-        mail: string;
     }
     enum EventType {
         GAME_START = 'GAME_START',
@@ -76,8 +79,9 @@
     const currentEvents = [];
     let gameEnded = false;
     let mousedownTimer: { start: number; duration: number; buttonIndex: number; };
-    const team1: ITeam = { offense: 1, defense: 2 };
-    const team2: ITeam = { offense: 3, defense: 4 };
+    const team1: ITeam = JSON.parse($page.url.searchParams.get('team1'));
+    const team2: ITeam = JSON.parse($page.url.searchParams.get('team2'));
+
     const getPlayerData = async (id: number): Promise<IUser> => {
         const response = await fetch(`http://localhost:8000/api/users`, {
             method: 'GET'

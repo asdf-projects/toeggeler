@@ -1,6 +1,18 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 // and what to do when importing types
+export interface IUser {
+    id: number;
+    username: string;
+    mail: string;
+    password?: string;
+}
+
+export interface ITeam {
+    offense: number;
+    defense: number;
+}
+
 declare namespace App {
 	// interface Locals {}
 	// interface PageData {}

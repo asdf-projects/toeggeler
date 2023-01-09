@@ -42,7 +42,7 @@
 
     <div>
         {#if isValidGame}
-            <Button class="action-button" href="/game" disabled="{!isValidGame}">
+            <Button class="action-button" on:click={startGame} disabled="{!isValidGame}">
                 <Icon>
                     <Play></Play>
                 </Icon>
@@ -61,16 +61,10 @@
     import Slider from '@smui/slider';
     import Button, { Label, Icon } from '@smui/button';
     import Play from 'svelte-material-icons/Play.svelte';
-    import UserSelection from "./UserSelection.svelte";
-
-    export interface IUser {
-        id: number;
-        username: string;
-    }
-    export interface ITeam {
-        offense: IUser;
-        defense: IUser;
-    }
+    import UserSelection from './UserSelection.svelte';
+    import {goto} from '$app/navigation';
+    import type {ITeam} from '../../app';
+    import {page} from '$app/stores';
 
     const gameTypes = [{
         key: '1vs1',
@@ -90,9 +84,16 @@
     let selectedGameType = gameTypes[1];
     let selectedGameEndType = gameEndTypes[1];
     let numberOfGoals = 8;
-    let team1: ITeam = { offense: undefined as IUser, defense: undefined as IUser };
-    let team2: ITeam  = { offense: undefined as IUser, defense: undefined as IUser };
+    let team1: ITeam = { offense: undefined as number, defense: undefined as number };
+    let team2: ITeam= { offense: undefined as number, defense: undefined as number };
 
     $: isValidGame = team1.offense && team1.defense && team2.offense && team2.defense &&
-            [...new Set([team1.offense.id, team1.defense.id, team2.offense.id, team2.defense.id])].length === 4;
+            [...new Set([team1.offense, team1.defense, team2.offense, team2.defense])].length === 4;
+
+    const startGame = () => {
+        $page.url.searchParams.set('team1', JSON.stringify(team1));
+        $page.url.searchParams.set('team2', JSON.stringify(team2));
+
+        goto(`/game?${$page.url.searchParams.toString()}`);
+    }
 </script>

@@ -1,10 +1,11 @@
 <div class="game-selection">
-    <Select bind:value={selectedGameType} label="{ $_('Play.GameType.Selection') }">
+    <h2>{ $_('Play.GameSettings') }</h2>
+    <Select bind:value={selectedGameType} label="{ $_('Play.GameType.Selection') }" disabled>
         {#each gameTypes as gameType}
             <Option value={gameType}>{ $_(gameType.label) }</Option>
         {/each}
     </Select>
-    <Select bind:value={selectedGameEndType} label="{ $_('Play.GameEndType.Selection') }">
+    <Select bind:value={selectedGameEndType} label="{ $_('Play.GameEndType.Selection') }" disabled>
         {#each gameEndTypes as gameEndType}
             <Option value={ gameEndType }>{ $_(gameEndType.label) }</Option>
         {/each}
@@ -19,6 +20,7 @@
                 discrete
                 input$aria-label="Slider to select the number of Goals to win"
                 style="flex-grow: 1;"
+                disabled
             >
             </Slider>
             <span
@@ -29,12 +31,27 @@
             </span>
         </FormField>
     {/if}
-    <Button class="action-button" href="/game">
-        <Icon>
-            <Play></Play>
-        </Icon>
-        <Label>{ $_('Play.StartGame') }</Label>
-    </Button>
+
+    <h2>{ $_('Play.UserSelection.Selection') }</h2>
+    <h3>{ $_('Play.UserSelection.Team1') }</h3>
+    <UserSelection bind:selectedUser={team1.offense} placeholder="Play.UserSelection.Offense"></UserSelection>
+    <UserSelection bind:selectedUser={team1.defense} placeholder="Play.UserSelection.Defense"></UserSelection>
+    <h3>{ $_('Play.UserSelection.Team2') }</h3>
+    <UserSelection bind:selectedUser={team2.offense} placeholder="Play.UserSelection.Offense"></UserSelection>
+    <UserSelection bind:selectedUser={team2.defense} placeholder="Play.UserSelection.Defense"></UserSelection>
+
+    <div>
+        {#if isValidGame}
+            <Button class="action-button" href="/game" disabled="{!isValidGame}">
+                <Icon>
+                    <Play></Play>
+                </Icon>
+                <Label>{ $_('Play.StartGame') }</Label>
+            </Button>
+        {:else }
+            <p>{ $_('Play.UserSelection.ErrorMessage') }</p>
+        {/if}
+    </div>
 </div>
 
 <script lang="ts">
@@ -44,6 +61,16 @@
     import Slider from '@smui/slider';
     import Button, { Label, Icon } from '@smui/button';
     import Play from 'svelte-material-icons/Play.svelte';
+    import UserSelection from "./UserSelection.svelte";
+
+    export interface IUser {
+        id: number;
+        username: string;
+    }
+    export interface ITeam {
+        offense: IUser;
+        defense: IUser;
+    }
 
     const gameTypes = [{
         key: '1vs1',
@@ -63,4 +90,9 @@
     let selectedGameType = gameTypes[1];
     let selectedGameEndType = gameEndTypes[1];
     let numberOfGoals = 8;
+    let team1: ITeam = { offense: undefined as IUser, defense: undefined as IUser };
+    let team2: ITeam  = { offense: undefined as IUser, defense: undefined as IUser };
+
+    $: isValidGame = team1.offense && team1.defense && team2.offense && team2.defense &&
+            [...new Set([team1.offense.id, team1.defense.id, team2.offense.id, team2.defense.id])].length === 4;
 </script>

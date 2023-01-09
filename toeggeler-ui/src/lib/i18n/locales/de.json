@@ -13,6 +13,7 @@
     }
   },
   "Play": {
+    "GameSettings": "Art des Spiels",
     "NumberOfGoals": "Anzahl Tore zum Sieg: ",
     "StartGame": "Spiel starten",
     "GameType": {
@@ -24,6 +25,14 @@
       "Selection": "Spielende",
       "Time": "Nach Ablauf der Zeit",
       "Result": "Nach Anzahl Tore"
+    },
+    "UserSelection": {
+      "Selection": "Benutzerauswahl",
+      "Offense": "Angriff",
+      "Defense": "Verteidigung",
+      "Team1": "Mannschaft 1",
+      "Team2": "Mannschaft 2",
+      "ErrorMessage": "Für jede Position muss ein Spieler ausgewählt werden, jeder Spieler darf nur einmal vorkommen."
     }
   },
   "Game": {

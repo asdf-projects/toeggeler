@@ -48,6 +48,11 @@ func (userCtrl UserController) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// @Summary Get a list of all users
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.User "ok"
+// @Router /users [get]
 func (userCtrl UserController) GetUsers(c *gin.Context) {
 	users, err := userCtrl.UserService.GetUsers()
 	if err != nil {

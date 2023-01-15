@@ -1,0 +1,28 @@
+definitions:
+  models.User:
+    properties:
+      id:
+        type: integer
+      mail:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /users:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: Get a list of all users
+swagger: "2.0"

@@ -5,8 +5,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/steinm91/toeggeler/toeggeler-server/controllers"
+	"github.com/steinm91/toeggeler/toeggeler-server/docs"
 	"github.com/steinm91/toeggeler/toeggeler-server/eval"
 	"github.com/steinm91/toeggeler/toeggeler-server/models"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Env struct {
@@ -31,12 +34,18 @@ func StartApiServer(env *Env) {
 		r.Use(JwtAuthMiddleware(env.SecretKey))
 	}
 
+	swaggerRoutes(r)
 	securityRoutes(env, r)
 	userRoutes(env, r)
 	gameRoutes(env, r)
 	evalEngineRoutes(env, r)
 
 	r.Run()
+}
+
+func swaggerRoutes(r *gin.Engine) {
+	docs.SwaggerInfo.BasePath = "/api"
+	r.GET("/api/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
 func securityRoutes(env *Env, r *gin.Engine) {

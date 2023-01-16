@@ -16,7 +16,9 @@ const (
 	getEventsForGame = "SELECT event_data FROM events WHERE event_game_id = ?"
 	getAllEvents     = "SELECT event_data FROM events ORDER BY event_game_id, event_timestamp ASC"
 
-	InsertGames       = "INSERT INTO games(game_id, game_start, game_end, team1_goals, team2_goals) VALUES "
+	getGamesPlayed = "SELECT game_id, cast(game_start AS INTEGER), cast(game_end AS INTEGER), team1_offense, team1_defense, team2_offense, team2_defense, team1_goals, team2_goals FROM games ORDER BY game_end ASC"
+
+	InsertGames       = "INSERT INTO games(game_id, game_start, game_end, team1_offense, team1_defense, team2_offense, team2_defense, team1_goals, team2_goals) VALUES "
 	InsertPlayerStats = "INSERT INTO game_player_stats(game_id, player_id, team, position, teammate_id, won, goals, foetelis, own_goals, rating) VALUES "
 )
 
@@ -45,11 +47,30 @@ func (gs *GameService) GetGameEvents() (*[]GameEvent, error) {
 	return &events, nil
 }
 
+func (gs *GameService) GetGamesPlayed() (*[]Game, error) {
+	rows, err := gs.DB.Query(getGamesPlayed)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var games []Game
+	for rows.Next() {
+		var game Game
+		if err := rows.Scan(&game.GameId, &game.GameStart, &game.GameEnd, &game.Offense1, &game.Defense1, &game.Offense2, &game.Defense2, &game.Team1Goals, &game.Team2Goals); err != nil {
+			return nil, err
+		}
+		games = append(games, game)
+	}
+
+	return &games, nil
+}
+
 func (gs *GameService) InsertGames(games []Game) error {
 	insertGamesQuery := InsertGames
 
 	for i, game := range games {
-		values := fmt.Sprintf("(\"%s\", %d, %d, %d, %d)", game.GameId, game.GameStart, game.GameEnd, game.Team1Goals, game.Team2Goals)
+		values := fmt.Sprintf("(\"%s\", %d, %d, %d, %d, %d, %d, %d, %d)", game.GameId, game.GameStart, game.GameEnd, game.Offense1, game.Defense1, game.Offense2, game.Defense2, game.Team1Goals, game.Team2Goals)
 		if i < len(games)-1 {
 			values += ", "
 		}

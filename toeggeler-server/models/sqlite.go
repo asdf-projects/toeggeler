@@ -38,8 +38,22 @@ func Migrate(db *sql.DB) error {
 		game_type INTEGER,
 		game_start DATETIME NOT NULL,
 		game_end DATETIME NOT NULL,
+		team1_offense INTEGER NOT NULL,
+		team1_defense INTEGER NOT NULL,
+		team2_offense INTEGER NOT NULL,
+		team2_defense INTEGER NOT NULL,
 		team1_goals INTEGER NOT NULL,
 		team2_goals INTEGER NOT NULL
+	);
+
+	CREATE TABLE IF NOT EXISTS player_stats(
+		player_id INTEGER NOT NULL,
+		rating INTEGER NOT NULL,
+		wins INTEGER NOT NULL,
+		losses INTEGER NOT NULL,
+		goals INTEGER NOT NULL,
+		foetelis INTEGER NOT NULL,
+		own_goals INTEGER NOT NULL
 	);
 
 	CREATE TABLE IF NOT EXISTS game_player_stats(

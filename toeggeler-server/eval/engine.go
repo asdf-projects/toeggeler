@@ -111,20 +111,16 @@ func (e EvalEngine) EvalGames(events *[]models.GameEvent) []models.Game {
 		}
 
 	}
-	/*
-		for _, game := range games {
-			log.Println("============", game.gameId, "============")
-			log.Println("Team1:", game.team1Goals)
-			log.Println("Team2:", game.team2Goals)
-			log.Println("---")
-			log.Printf("Player %d (Team 1), Goals: %d, Own Goals: %d, Foetelis: %d", game.offense1, game.playerStats[game.offense1].goals, game.playerStats[game.offense1].ownGoals, game.playerStats[game.offense1].foetelis)
-			log.Printf("Player %d (Team 1), Goals: %d, Own Goals: %d, Foetelis: %d", game.defense1, game.playerStats[game.defense1].goals, game.playerStats[game.defense1].ownGoals, game.playerStats[game.defense1].foetelis)
-			log.Printf("Player %d (Team 2), Goals: %d, Own Goals: %d, Foetelis: %d", game.offense2, game.playerStats[game.offense2].goals, game.playerStats[game.offense2].ownGoals, game.playerStats[game.offense2].foetelis)
-			log.Printf("Player %d (Team 2), Goals: %d, Own Goals: %d, Foetelis: %d", game.defense2, game.playerStats[game.defense2].goals, game.playerStats[game.defense2].ownGoals, game.playerStats[game.defense2].foetelis)
-			log.Println("=====================================================")
-			log.Println("")
-		}
-	*/
 
 	return games
+}
+
+func getPlayerStats(game models.Game, playerId int64) *models.Player {
+	playerStats, exists := game.PlayerStats[playerId]
+
+	if exists {
+		return playerStats
+	} else {
+		return &models.Player{Goals: 0, Foetelis: 0, OwnGoals: 0}
+	}
 }

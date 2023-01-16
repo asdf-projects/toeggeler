@@ -34,6 +34,7 @@ func StartApiServer(env *Env) {
 	securityRoutes(env, r)
 	userRoutes(env, r)
 	gameRoutes(env, r)
+	statsRoutes(env, r)
 	evalEngineRoutes(env, r)
 
 	r.Run()
@@ -61,13 +62,19 @@ func gameRoutes(env *Env, r *gin.Engine) {
 	gameService := models.GameService{DB: env.DB}
 	gameCtrl := controllers.GameController{GameService: &gameService}
 
-	//r.GET("/api/games", gameCtrl.GetGamesPlayed)
+	r.GET("/api/games", gameCtrl.GetGamesPlayed)
 	r.POST("/api/games", gameCtrl.SubmitGame)
 
 	if env.DevMode == true {
 		r.POST("/api/games/clear", gameCtrl.ClearGames)
 		r.POST("/api/player-stats/clear", gameCtrl.ClearPlayerStats)
 	}
+}
+
+func statsRoutes(env *Env, r *gin.Engine) {
+	statsCtrl := controllers.StatsController{}
+	r.GET("/api/stats", statsCtrl.GetStats)
+	r.GET("/api/stats/:id", statsCtrl.GetStatsForPlayer)
 }
 
 func evalEngineRoutes(env *Env, r *gin.Engine) {

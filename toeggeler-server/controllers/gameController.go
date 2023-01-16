@@ -13,20 +13,24 @@ type GameController struct {
 	GameService *models.GameService
 }
 
-/*
-func (gameCtrl GameController) GetGamesPlayed(c *gin.Context) {
-	playerId := c.Query("player")
-	if playerId == "" {
-		c.String(http.StatusBadRequest, "Please provide a player id using the query parameter 'player'")
-		return
-	}
-
-	id, _ := strconv.ParseInt(playerId, 10, 64)
-	games, _ := gameCtrl.GameService.GetGamesPlayedForPlayer(id)
-
-	c.JSON(http.StatusOK, games)
+type Score struct {
+	Team1 int `json:"team1"`
+	Team2 int `json:"team2"`
 }
-*/
+
+type Team struct {
+	Offense int64 `json:"offense"`
+	Defense int64 `json:"defense"`
+}
+
+type Game struct {
+	GameId    string `json:"gameId"`
+	GameStart int64  `json:"gameStart"`
+	GameEnd   int64  `json:"gameEnd"`
+	Team1     Team   `json:"team1"`
+	Team2     Team   `json:"team2"`
+	Score     Score  `json:"score"`
+}
 
 func (gameCtrl GameController) SubmitGame(c *gin.Context) {
 	var err error
@@ -63,6 +67,39 @@ func (gameCtrl GameController) SubmitGame(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, game)
+}
+
+func (gameCtrl GameController) GetGamesPlayed(c *gin.Context) {
+	gamesPlayed, err := gameCtrl.GameService.GetGamesPlayed()
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Could not retrieve games")
+	}
+
+	games := []Game{}
+	for _, g := range *gamesPlayed {
+		game := Game{
+			GameId:    g.GameId,
+			GameStart: g.GameStart,
+			GameEnd:   g.GameEnd,
+			Team1: Team{
+				Offense: g.Offense1,
+				Defense: g.Defense1,
+			},
+			Team2: Team{
+				Offense: g.Offense2,
+				Defense: g.Defense2,
+			},
+			Score: Score{
+				Team1: g.Team1Goals,
+				Team2: g.Team2Goals,
+			},
+		}
+
+		games = append(games, game)
+	}
+
+	c.JSON(http.StatusOK, games)
 }
 
 func (gameCtrl GameController) ClearGames(c *gin.Context) {

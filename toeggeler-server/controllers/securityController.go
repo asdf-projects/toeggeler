@@ -21,6 +21,16 @@ type AuthenRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// Authenticate godoc
+// @Summary      Authenticate by username and password
+// @Description  authenticate
+// @Tags         Authenticate
+// @Accept       json
+// @Produce      json
+// @Header       200  {string}  Token     "token"
+// @Param        Credentials body AuthenRequest true  "User credentials"
+// @Success      200
+// @Router       /authenticate [post]
 func (s SecurityController) Authenticate(c *gin.Context) {
 	var authenRequest AuthenRequest
 

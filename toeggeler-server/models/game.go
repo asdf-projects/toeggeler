@@ -23,22 +23,34 @@ const (
 	FOETELI    GameEventType = "FOETELI"
 )
 
+// Game event description
+// @Description Game event description
 type GameEvent struct {
-	Id        int64         `json:"id"`
-	GameId    string        `json:"gameId"`
-	Timestamp int64         `json:"timestamp"`
-	Event     GameEventType `json:"event"`
+	// ID of the event
+	Id int64 `json:"id"`
+	// ID of the game
+	GameId string `json:"gameId"`
+	// Unix timestamp
+	Timestamp int64 `json:"timestamp"`
 
-	// GAME_START
+	// Event type
+	Event GameEventType `json:"event"`
+
+	// Required when event is "GAME_START"
 	Team1 *Team `json:"team1,omitempty"`
+
+	// Required when event is "GAME_START"
 	Team2 *Team `json:"team2,omitempty"`
 
-	// GOAL | OWN_GOAL | FOETELI
+	// Required when is is "GOAL", "OWN_GOAL" or "FOETELI"
 	Player *int64 `json:"player,omitempty"`
 }
 
+// @Description A team consists of an offensive and defensive player
 type Team struct {
+	// ID of the player on offense
 	Offense int64 `json:"offense"`
+	// ID of the player on defense
 	Defense int64 `json:"defense"`
 }
 

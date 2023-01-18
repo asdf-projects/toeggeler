@@ -41,6 +41,17 @@ func loadConfig() EnvVars {
 	}
 }
 
+//	@title			Toeggeler Server API
+//	@version		0.1
+//	@description	Api specification
+
+//	@host		localhost:8080
+//	@BasePath	/api
+
+// @securityDefinitions.apiKey		Bearer
+// @in								Header
+// @name							Authorization
+// @description 					Enter the token with the `Bearer: ` prefix, e.g. "Bearer abcde12345".
 func main() {
 	envVars := loadConfig()
 

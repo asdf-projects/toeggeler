@@ -1,0 +1,297 @@
+basePath: /api
+definitions:
+  controllers.AuthenRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  controllers.CreateUserRequest:
+    properties:
+      mail:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - mail
+    - password
+    - username
+    type: object
+  controllers.Game:
+    properties:
+      gameEnd:
+        type: integer
+      gameId:
+        type: string
+      gameStart:
+        type: integer
+      score:
+        $ref: '#/definitions/controllers.Score'
+      team1:
+        $ref: '#/definitions/controllers.Team'
+      team2:
+        $ref: '#/definitions/controllers.Team'
+    type: object
+  controllers.Score:
+    properties:
+      team1:
+        type: integer
+      team2:
+        type: integer
+    type: object
+  controllers.Team:
+    properties:
+      defense:
+        type: integer
+      offense:
+        type: integer
+    type: object
+  controllers.UpdateUserRequest:
+    properties:
+      mail:
+        type: string
+    required:
+    - mail
+    type: object
+  models.GameEvent:
+    description: Game event description
+    properties:
+      event:
+        allOf:
+        - $ref: '#/definitions/models.GameEventType'
+        description: Event type
+      gameId:
+        description: ID of the game
+        type: string
+      id:
+        description: ID of the event
+        type: integer
+      player:
+        description: Required when is is "GOAL", "OWN_GOAL" or "FOETELI"
+        type: integer
+      team1:
+        allOf:
+        - $ref: '#/definitions/models.Team'
+        description: Required when event is "GAME_START"
+      team2:
+        allOf:
+        - $ref: '#/definitions/models.Team'
+        description: Required when event is "GAME_START"
+      timestamp:
+        description: Unix timestamp
+        type: integer
+    type: object
+  models.GameEventType:
+    enum:
+    - GAME_START
+    - GAME_END
+    - GOAL
+    - OWN_GOAL
+    - FOETELI
+    type: string
+    x-enum-varnames:
+    - GAME_START
+    - GAME_END
+    - GOAL
+    - OWN_GOAL
+    - FOETELI
+  models.Team:
+    description: A team consists of an offensive and defensive player
+    properties:
+      defense:
+        description: ID of the player on defense
+        type: integer
+      offense:
+        description: ID of the player on offense
+        type: integer
+    type: object
+  models.User:
+    description: User information
+    properties:
+      id:
+        description: ID of the user
+        type: integer
+      mail:
+        description: Email address
+        type: string
+      username:
+        description: Username
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Api specification
+  title: Toeggeler Server API
+  version: "0.1"
+paths:
+  /authenticate:
+    post:
+      consumes:
+      - application/json
+      description: authenticate
+      parameters:
+      - description: User credentials
+        in: body
+        name: Credentials
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.AuthenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Authenticate by username and password
+      tags:
+      - Authenticate
+  /games:
+    post:
+      consumes:
+      - application/json
+      description: submit a game
+      parameters:
+      - description: Game events
+        in: body
+        name: user
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/models.GameEvent'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Game'
+        "404":
+          description: Not Found
+      summary: Submit a game
+      tags:
+      - Games
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all available users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: Get a list of all available users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: create a new user
+      parameters:
+      - description: Create user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Create a new user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete an existing user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+      summary: Delete an existing user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get a user by Id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "404":
+          description: Not Found
+      summary: Get a user by Id
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: update an existing user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "404":
+          description: Not Found
+      summary: Update an existing user
+      tags:
+      - users
+securityDefinitions:
+  Bearer:
+    description: 'Enter the token with the `Bearer: ` prefix, e.g. "Bearer abcde12345".'
+    in: Header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

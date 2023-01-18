@@ -32,6 +32,16 @@ type Game struct {
 	Score     Score  `json:"score"`
 }
 
+// SubmitGame godoc
+// @Summary      Submit a game
+// @Description  submit a game
+// @Tags		 Games
+// @Accept       json
+// @Produce      json
+// @Param        user body []models.GameEvent true "Game events"
+// @Success      200  {object}	Game
+// @Failure		 404
+// @Router       /games [post]
 func (gameCtrl GameController) SubmitGame(c *gin.Context) {
 	var err error
 	var gameId ksuid.KSUID

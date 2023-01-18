@@ -14,9 +14,14 @@ type UserService struct {
 	DB *sql.DB
 }
 
+// User model info
+// @Description User information
 type User struct {
-	Id       int64  `json:"id"`
+	// ID of the user
+	Id int64 `json:"id"`
+	// Username
 	Username string `json:"username"`
+	// Email address
 	Mail     string `json:"mail"`
 	Password string `json:"-"`
 }

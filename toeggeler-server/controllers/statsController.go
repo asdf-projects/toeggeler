@@ -25,11 +25,29 @@ type Stats struct {
 	OwnGoals int   `json:"ownGoals"`
 }
 
+// GetStats godoc
+// @Summary      Get statistics for all availabl users (FAKE DATA)
+// @Description  Get statistics for all available users
+// @Tags		 Stats
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  []Stats
+// @Router       /stats [get]
 func (ctrl StatsController) GetStats(c *gin.Context) {
 	stats := getFakeStats()
 	c.JSON(http.StatusOK, stats)
 }
 
+// GetStatsForUser godoc
+// @Summary      Get statistics for a user (FAKE DATA, available IDs: 1, 2, 3, 4)
+// @Description  Get statistics for a user
+// @Tags		 Stats
+// @Accept       json
+// @Produce      json
+// @Param		 id path int true "User ID"
+// @Success      200  {object} Stats
+// @Failure      404
+// @Router       /stats/{id} [get]
 func (ctrl StatsController) GetStatsForPlayer(c *gin.Context) {
 	stats := getFakeStats()
 

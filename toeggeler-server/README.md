@@ -16,145 +16,26 @@ The modules defined in _go.mod_ should automatically be loaded.
 
 ## Customizing
 
-Change variables in _.env_ if you wish to re-name the database file or use another port for the server.
-Defaults (both are strings): 
-* Port: **:8080**
-* Database file: **./toeggeler.sqlite**
+Change variables in _config.toml_ if you wish to re-name the database file or use another port for the server.
+Defaults:
+
+* **common.dev:** true
+<br>_Enables the development mode, which basically means more logs_
+
+* **server.port:** ":8080"
+<br>_Set the server port_
+
+* **server.enableJwt:** false
+<br>_Enables mandatory JWT Token validation for authorized routes_
+
+* **database.file:** "./toeggeler.sqlite"
+<br>_Filename for the SQLite database_
 
 
 # Using the API
+Open http://localhost:8080/api/swagger/index.html to get an overview of the available API endpoints and try them out.
 
-<details>
+When setting **server.enableJwt** to true, some APIs require a valid JWT token. This is indicated by a response with http code 401.
 
-<summary>User Management</summary>
-
-<br />
-
-**GET /api/users** to get all users
-
-```
-// Response 
-[
-    {
-        "id": 1,
-        "username": "Franz",
-        "mail": "franz@net.com",   
-    }
-]
-```
-* **GET /api/users/{name}** to get a single user
-```
-// Response 
-{
-    "id": 1,
-    "username": "Franz",
-    "mail": "franz@net.com",   
-}
-```
-* **POST /api/users** to create a new user
-```
-// Request
-{
-    "username": "Franz",
-    "mail": "franz@net.com"
-    "password": "insecure"
-}
-
-// Response 
-{
-    "id": 1,
-    "username": "Franz",
-    "mail": "franz@net.com",   
-}
-```
-* **PUT /api/users/{name}** to update an existing user
-```
-// Request
-{
-    // only mail updatable for now
-    "mail": "franz2@net.com"
-}
-
-// Response 
-{
-    "id": 1,
-    "username": "Franz",
-    "mail": "franz2@net.com",   
-}
-```
-* **DELETE /api/users/{name}** to delete an existing user
-</details>
-
-<details>
-<summary>Game Management</summary>
-
-<br/>
-
-* **GET api/games?playerId={id}** to get games played by the player
-```
-// Response
-[
-    {
-        "id": "asdfasdfasdf",
-        "events: [
-            {
-                "timestamp": 1000000,
-                "event": "GAME_START",
-                "team1": {
-                    "offense": 1,
-                    "defense": 2
-                },
-                "team2: {
-                    "offense": 3,
-                    "defense": 4
-                }
-            },
-            {
-                "timestamp": 100000,
-                "event": "GOAL" | "OWN_GOAL" | "FOETELI",
-                "player": 1
-            }
-            {
-                "timestamp": 130000,
-                "event": "GAME_END"
-            }
-        ]
-    }
-]
-```
-
-* **POST /api/games** to submit a completed game
-```
-// Request
-[
-    // "GAME_START" requires "team1" and "team2" properties 
-    {
-        "timestamp": 1000000, // unix timestamp
-        "event": "GAME_START",
-        "team1": {
-            "offense": 1,
-            "defense": 2
-        },
-        "team2: {
-            "offense": 3,
-            "defense": 4
-        }
-    },
-    // any type of goal event requires the player id 
-    {
-        "timestamp": 100000,
-        "event": "GOAL" | "OWN_GOAL" | "FOETELI",
-        "player": 1
-    }
-    {
-        "timestamp": 130000,
-        "event": "GAME_END"
-    }
-]
-
-// Response
-{
-    "id": "IdIdIdIdId"
-}
-```
-</details>
+Use _POST /api/authenticate_ to get a JWT Token. Use the button **Authorize** in the Swagger UI (top right) and enter the token received from the authentication response.
+Currently the token is hard-coded to be valid for half an hour.

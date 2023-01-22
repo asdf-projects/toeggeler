@@ -26,7 +26,7 @@ type UpdateUserRequest struct {
 // CreateUser godoc
 // @Summary      Create a new user
 // @Description  create a new user
-// @Tags		 users
+// @Tags		 Users
 // @Accept       json
 // @Produce      json
 // @Param        user body CreateUserRequest true "Create user"
@@ -60,7 +60,7 @@ func (userCtrl UserController) CreateUser(c *gin.Context) {
 // GetUsers godoc
 // @Summary      Get a list of all available users
 // @Description  Get a list of all available users
-// @Tags		 users
+// @Tags		 Users
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  []models.User
@@ -79,7 +79,7 @@ func (userCtrl UserController) GetUsers(c *gin.Context) {
 // GetUser godoc
 // @Summary      Get a user by Id
 // @Description  Get a user by Id
-// @Tags		 users
+// @Tags		 Users
 // @Accept       json
 // @Produce      json
 // @Param		 id path int true "User ID"
@@ -104,8 +104,9 @@ func (userCtrl UserController) GetUser(c *gin.Context) {
 
 // UpdateUser godoc
 // @Summary      Update an existing user
-// @Description  update an existing user
-// @Tags		 users
+// @Description  Update an existing user
+// @Tags		 Users
+// @Security	 ApiKeyAuth
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "User ID"
@@ -136,8 +137,9 @@ func (userCtrl UserController) UpdateUser(c *gin.Context) {
 
 // DeleteUser godoc
 // @Summary      Delete an existing user
-// @Description  delete an existing user
-// @Tags		 users
+// @Description  Delete an existing user
+// @Tags		 Users
+// @Security	 ApiKeyAuth
 // @Accept       json
 // @Produce      json
 // @Param        id path int true "User ID"

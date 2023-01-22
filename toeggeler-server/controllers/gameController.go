@@ -34,8 +34,10 @@ type Game struct {
 
 // SubmitGame godoc
 // @Summary      Submit a game
-// @Description  submit a game
+// @Description  Submit a game by listing every event.
+// @Description  Available events: <ul><li>GAME_START</li><li>GOAL</li><li>OWN_GOAL</li><li>FOETELI</li><li>GAME_END</li></ul>
 // @Tags		 Games
+// @Security	 ApiKeyAuth
 // @Accept       json
 // @Produce      json
 // @Param        user body []models.GameEvent true "Game events"

@@ -30,59 +30,66 @@ func StartApiServer(env *Env) {
 
 	r := gin.Default()
 
+	unauthorized := r.Group("/api")
+	swaggerRoutes(env, unauthorized)
+	securityRoutes(env, unauthorized)
+
+	authorized := r.Group("/api")
 	if env.EnableJwt {
-		r.Use(JwtAuthMiddleware(env.SecretKey))
+		authorized.Use(JwtAuthMiddleware(env.SecretKey))
 	}
 
-	r.GET("/api/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-
-	securityRoutes(env, r)
-	userRoutes(env, r)
-	gameRoutes(env, r)
-	statsRoutes(env, r)
-	evalEngineRoutes(env, r)
+	userRoutes(env, unauthorized, authorized)
+	gameRoutes(env, unauthorized, authorized)
+	statsRoutes(env, unauthorized)
+	evalEngineRoutes(env, unauthorized)
 
 	r.Run()
 }
 
-func securityRoutes(env *Env, r *gin.Engine) {
+func swaggerRoutes(env *Env, unauthorized *gin.RouterGroup) {
+	unauthorized.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+}
+
+func securityRoutes(env *Env, unauthorized *gin.RouterGroup) {
 	userService := models.UserService{DB: env.DB}
 	securityCtrl := controllers.SecurityController{UserService: &userService, SecretKey: env.SecretKey}
 
-	r.POST("/api/authenticate", securityCtrl.Authenticate)
+	unauthorized.POST("/authenticate", securityCtrl.Authenticate)
 }
 
-func userRoutes(env *Env, r *gin.Engine) {
+func userRoutes(env *Env, unauthorized *gin.RouterGroup, authorized *gin.RouterGroup) {
 	userService := models.UserService{DB: env.DB}
 	userCtrl := controllers.UserController{UserService: &userService}
 
-	r.GET("/api/users", userCtrl.GetUsers)
-	r.GET("/api/users/:id", userCtrl.GetUser)
-	r.POST("/api/users", userCtrl.CreateUser)
-	r.PUT("/api/users/:id", userCtrl.UpdateUser)
-	r.DELETE("/api/users/:id", userCtrl.DeleteUser)
+	unauthorized.GET("/users", userCtrl.GetUsers)
+	unauthorized.GET("/users/:id", userCtrl.GetUser)
+	unauthorized.POST("/users", userCtrl.CreateUser)
+
+	authorized.PUT("/users/:id", userCtrl.UpdateUser)
+	authorized.DELETE("/users/:id", userCtrl.DeleteUser)
 }
 
-func gameRoutes(env *Env, r *gin.Engine) {
+func gameRoutes(env *Env, unauthorized *gin.RouterGroup, authorized *gin.RouterGroup) {
 	gameService := models.GameService{DB: env.DB}
 	gameCtrl := controllers.GameController{GameService: &gameService}
 
-	r.GET("/api/games", gameCtrl.GetGamesPlayed)
-	r.POST("/api/games", gameCtrl.SubmitGame)
+	unauthorized.GET("/games", gameCtrl.GetGamesPlayed)
+	authorized.POST("/games", gameCtrl.SubmitGame)
 
 	if env.DevMode == true {
-		r.POST("/api/games/clear", gameCtrl.ClearGames)
-		r.POST("/api/player-stats/clear", gameCtrl.ClearPlayerStats)
+		unauthorized.POST("/games/clear", gameCtrl.ClearGames)
+		unauthorized.POST("/player-stats/clear", gameCtrl.ClearPlayerStats)
 	}
 }
 
-func statsRoutes(env *Env, r *gin.Engine) {
+func statsRoutes(env *Env, unauthorized *gin.RouterGroup) {
 	statsCtrl := controllers.StatsController{}
-	r.GET("/api/stats", statsCtrl.GetStats)
-	r.GET("/api/stats/:id", statsCtrl.GetStatsForPlayer)
+	unauthorized.GET("/stats", statsCtrl.GetStats)
+	unauthorized.GET("/stats/:id", statsCtrl.GetStatsForPlayer)
 }
 
-func evalEngineRoutes(env *Env, r *gin.Engine) {
+func evalEngineRoutes(env *Env, unauthorized *gin.RouterGroup) {
 	gameService := models.GameService{DB: env.DB}
 	userService := models.UserService{DB: env.DB}
 	evalController := controllers.EvalController{
@@ -91,5 +98,5 @@ func evalEngineRoutes(env *Env, r *gin.Engine) {
 		EvalEngine:  &env.EvalEngine,
 	}
 
-	r.POST("/api/eval", evalController.Eval)
+	unauthorized.POST("/eval", evalController.Eval)
 }

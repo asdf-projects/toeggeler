@@ -48,7 +48,7 @@ func loadConfig() EnvVars {
 //	@host		localhost:8080
 //	@BasePath	/api
 
-// @securityDefinitions.apiKey		Bearer
+// @securityDefinitions.apiKey		ApiKeyAuth
 // @in								Header
 // @name							Authorization
 // @description 					Enter the token with the `Bearer: ` prefix, e.g. "Bearer abcde12345".

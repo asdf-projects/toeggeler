@@ -13,11 +13,6 @@ import (
 
 func JwtAuthMiddleware(secretKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
-		if c.Request.URL.String() == "/api/authenticate" {
-			c.Next()
-		}
-
 		err := validateToken(c, secretKey)
 
 		if err != nil {
@@ -52,6 +47,8 @@ func validateToken(c *gin.Context, secretKey string) error {
 func extractToken(c *gin.Context, secretKey string) (*jwt.Token, error) {
 	tokenString := getTokenFromRequest(c)
 
+	log.Printf("Token: %s", tokenString)
+
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("There was an error in parsing")
@@ -63,6 +60,7 @@ func extractToken(c *gin.Context, secretKey string) (*jwt.Token, error) {
 }
 
 func getTokenFromRequest(c *gin.Context) string {
+	log.Println(c.Request.Header)
 	bearerToken := c.Request.Header.Get("Authorization")
 
 	splitToken := strings.Split(bearerToken, " ")

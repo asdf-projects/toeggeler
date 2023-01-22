@@ -23,7 +23,7 @@ type AuthenRequest struct {
 
 // Authenticate godoc
 // @Summary      Authenticate by username and password
-// @Description  authenticate
+// @Description  Authenticate (Passwords for all available users is "1234")
 // @Tags         Authenticate
 // @Accept       json
 // @Produce      json

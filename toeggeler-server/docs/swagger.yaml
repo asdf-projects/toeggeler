@@ -45,6 +45,23 @@ definitions:
       team2:
         type: integer
     type: object
+  controllers.Stats:
+    properties:
+      foetelis:
+        type: integer
+      goals:
+        type: integer
+      losses:
+        type: integer
+      ownGoals:
+        type: integer
+      playerId:
+        type: integer
+      rating:
+        type: integer
+      wins:
+        type: integer
+    type: object
   controllers.Team:
     properties:
       defense:
@@ -135,7 +152,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: authenticate
+      description: Authenticate (Passwords for all available users is "1234")
       parameters:
       - description: User credentials
         in: body
@@ -155,7 +172,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: submit a game
+      description: |-
+        Submit a game by listing every event.
+        Available events: <ul><li>GAME_START</li><li>GOAL</li><li>OWN_GOAL</li><li>FOETELI</li><li>GAME_END</li></ul>
       parameters:
       - description: Game events
         in: body
@@ -174,9 +193,51 @@ paths:
             $ref: '#/definitions/controllers.Game'
         "404":
           description: Not Found
+      security:
+      - ApiKeyAuth: []
       summary: Submit a game
       tags:
       - Games
+  /stats:
+    get:
+      consumes:
+      - application/json
+      description: Get statistics for all available users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/controllers.Stats'
+            type: array
+      summary: Get statistics for all availabl users (FAKE DATA)
+      tags:
+      - Stats
+  /stats/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get statistics for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Stats'
+        "404":
+          description: Not Found
+      summary: 'Get statistics for a user (FAKE DATA, available IDs: 1, 2, 3, 4)'
+      tags:
+      - Stats
   /users:
     get:
       consumes:
@@ -193,7 +254,7 @@ paths:
             type: array
       summary: Get a list of all available users
       tags:
-      - users
+      - Users
     post:
       consumes:
       - application/json
@@ -214,12 +275,12 @@ paths:
             $ref: '#/definitions/models.User'
       summary: Create a new user
       tags:
-      - users
+      - Users
   /users/{id}:
     delete:
       consumes:
       - application/json
-      description: delete an existing user
+      description: Delete an existing user
       parameters:
       - description: User ID
         in: path
@@ -233,9 +294,11 @@ paths:
           description: OK
         "404":
           description: Not Found
+      security:
+      - ApiKeyAuth: []
       summary: Delete an existing user
       tags:
-      - users
+      - Users
     get:
       consumes:
       - application/json
@@ -259,11 +322,11 @@ paths:
           description: Not Found
       summary: Get a user by Id
       tags:
-      - users
+      - Users
     put:
       consumes:
       - application/json
-      description: update an existing user
+      description: Update an existing user
       parameters:
       - description: User ID
         in: path
@@ -285,11 +348,13 @@ paths:
             $ref: '#/definitions/models.User'
         "404":
           description: Not Found
+      security:
+      - ApiKeyAuth: []
       summary: Update an existing user
       tags:
-      - users
+      - Users
 securityDefinitions:
-  Bearer:
+  ApiKeyAuth:
     description: 'Enter the token with the `Bearer: ` prefix, e.g. "Bearer abcde12345".'
     in: Header
     name: Authorization

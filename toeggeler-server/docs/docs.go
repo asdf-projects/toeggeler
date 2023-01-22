@@ -18,7 +18,7 @@ const docTemplate = `{
     "paths": {
         "/authenticate": {
             "post": {
-                "description": "authenticate",
+                "description": "Authenticate (Passwords for all available users is \"1234\")",
                 "consumes": [
                     "application/json"
                 ],
@@ -49,7 +49,12 @@ const docTemplate = `{
         },
         "/games": {
             "post": {
-                "description": "submit a game",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Submit a game by listing every event.\nAvailable events: \u003cul\u003e\u003cli\u003eGAME_START\u003c/li\u003e\u003cli\u003eGOAL\u003c/li\u003e\u003cli\u003eOWN_GOAL\u003c/li\u003e\u003cli\u003eFOETELI\u003c/li\u003e\u003cli\u003eGAME_END\u003c/li\u003e\u003c/ul\u003e",
                 "consumes": [
                     "application/json"
                 ],
@@ -87,6 +92,67 @@ const docTemplate = `{
                 }
             }
         },
+        "/stats": {
+            "get": {
+                "description": "Get statistics for all available users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stats"
+                ],
+                "summary": "Get statistics for all availabl users (FAKE DATA)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/controllers.Stats"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stats/{id}": {
+            "get": {
+                "description": "Get statistics for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stats"
+                ],
+                "summary": "Get statistics for a user (FAKE DATA, available IDs: 1, 2, 3, 4)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Stats"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "Get a list of all available users",
@@ -97,7 +163,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Get a list of all available users",
                 "responses": {
@@ -121,7 +187,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Create a new user",
                 "parameters": [
@@ -155,7 +221,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Get a user by Id",
                 "parameters": [
@@ -183,7 +249,12 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update an existing user",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update an existing user",
                 "consumes": [
                     "application/json"
                 ],
@@ -191,7 +262,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Update an existing user",
                 "parameters": [
@@ -225,7 +296,12 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete an existing user",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete an existing user",
                 "consumes": [
                     "application/json"
                 ],
@@ -233,7 +309,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Delete an existing user",
                 "parameters": [
@@ -321,6 +397,32 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "team2": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controllers.Stats": {
+            "type": "object",
+            "properties": {
+                "foetelis": {
+                    "type": "integer"
+                },
+                "goals": {
+                    "type": "integer"
+                },
+                "losses": {
+                    "type": "integer"
+                },
+                "ownGoals": {
+                    "type": "integer"
+                },
+                "playerId": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "integer"
+                },
+                "wins": {
                     "type": "integer"
                 }
             }
@@ -444,7 +546,7 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "Bearer": {
+        "ApiKeyAuth": {
             "description": "Enter the token with the ` + "`" + `Bearer: ` + "`" + ` prefix, e.g. \"Bearer abcde12345\".",
             "type": "apiKey",
             "name": "Authorization",

@@ -26,7 +26,7 @@ type Stats struct {
 }
 
 // GetStats godoc
-// @Summary      Get statistics for all availabl users (FAKE DATA)
+// @Summary      Get statistics for all available users (FAKE DATA)
 // @Description  Get statistics for all available users
 // @Tags		 Stats
 // @Accept       json

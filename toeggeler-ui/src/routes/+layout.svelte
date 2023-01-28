@@ -43,8 +43,8 @@
         },
         {
             icon: 'Trophy',
-            label: 'Menu.Scoreboard',
-            target: '/scoreboard'
+            label: 'Menu.Stats',
+            target: '/stats'
         },
         {
             icon: 'AccountGroup',

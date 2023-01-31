@@ -3,18 +3,18 @@
 	import { _ } from 'svelte-i18n';
 	import HelperText from '@smui/textfield/helper-text';
 	import Button, { Label } from '@smui/button';
-    import {goto} from "$app/navigation";
-    import {page} from "$app/stores";
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 
 	let username: string | null = null;
 	let email: string | null = null;
 	let password: string | null = null;
 
-    const onClickSave = async () => {
-        const newUser: { id } = await addUser();
-        $page.url.searchParams.set('highlightedUserId', newUser.id);
-        goto(`/users?${$page.url.searchParams.toString()}`);
-    };
+	const onClickSave = async () => {
+		const newUser: { id } = await addUser();
+		$page.url.searchParams.set('highlightedUserId', newUser.id);
+		goto(`/users?${$page.url.searchParams.toString()}`);
+	};
 	const addUser = async () => {
 		const user = { username, mail: email, password };
 		const response = await fetch('http://localhost:8000/api/users', {

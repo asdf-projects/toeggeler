@@ -1,65 +1,65 @@
 {
-  "Login": {
-    "Username": "Benutzername",
-    "Password": "Passwort",
-    "Login": "Einloggen",
-    "Signup": "Neuen Benutzer registrieren",
-    "ResetPassword": "Passwort zurücksetzen"
-  },
-  "Signup": {
-    "Username": "Benutzername",
-    "Email": "E-Mail",
-    "Password": "Passwort",
-    "InvalidEmail": "Ungültige E-Mail Adresse",
-    "Save": "Speichern"
-  },
-  "Menu": {
-    "Play": "Spielen",
-    "Stats": "Statistiken",
-    "Users": "Benutzer",
-    "Administration": "Benutzer-Administration"
-  },
-  "Users":  {
-    "StatsFor": "Benutzerstatistik für",
-    "Foetelis": "Anzahl Föteli",
-    "Goals": "Anzahl Tore",
-    "OwnGoals": "Anzahl Eigentore",
-    "Rating": "Bewertung",
-    "Wins": "Gewonnene Spiele"
-  },
-  "Play": {
-    "GameSettings": "Art des Spiels",
-    "NumberOfGoals": "Anzahl Tore zum Sieg: ",
-    "StartGame": "Spiel starten",
-    "GameType": {
-      "Selection": "Spielmodus",
-      "1vs1": "1 gegen 1",
-      "2vs2": "2 gegen 2"
-    },
-    "GameEndType": {
-      "Selection": "Spielende",
-      "Time": "Nach Ablauf der Zeit",
-      "Result": "Nach Anzahl Tore"
-    },
-    "UserSelection": {
-      "Selection": "Benutzerauswahl",
-      "Offense": "Angriff",
-      "Defense": "Verteidigung",
-      "Team1": "Mannschaft 1",
-      "Team2": "Mannschaft 2",
-      "ErrorMessage": "Für jede Position muss ein Spieler ausgewählt werden, jeder Spieler darf nur einmal vorkommen."
-    }
-  },
-  "Game": {
-    "Score": "Aktueller Spielstand:",
-    "EndOfGame": "Spiel beendet. Schlussstand:"
-  },
-  "Stats": {
-    "Stats": "Benutzerstatistiken",
-    "Username": "Benutzername",
-    "WinLossRatio": "Gewinnn-Quote",
-    "Goals": "Tore",
-    "Foeteli": "Föteli",
-    "OwnGoals": "Eigentore"
-  }
+	"Login": {
+		"Username": "Benutzername",
+		"Password": "Passwort",
+		"Login": "Einloggen",
+		"Signup": "Neuen Benutzer registrieren",
+		"ResetPassword": "Passwort zurücksetzen"
+	},
+	"Signup": {
+		"Username": "Benutzername",
+		"Email": "E-Mail",
+		"Password": "Passwort",
+		"InvalidEmail": "Ungültige E-Mail Adresse",
+		"Save": "Speichern"
+	},
+	"Menu": {
+		"Play": "Spielen",
+		"Stats": "Statistiken",
+		"Users": "Benutzer",
+		"Administration": "Benutzer-Administration"
+	},
+	"Users": {
+		"StatsFor": "Benutzerstatistik für",
+		"Foetelis": "Anzahl Föteli",
+		"Goals": "Anzahl Tore",
+		"OwnGoals": "Anzahl Eigentore",
+		"Rating": "Bewertung",
+		"Wins": "Gewonnene Spiele"
+	},
+	"Play": {
+		"GameSettings": "Art des Spiels",
+		"NumberOfGoals": "Anzahl Tore zum Sieg: ",
+		"StartGame": "Spiel starten",
+		"GameType": {
+			"Selection": "Spielmodus",
+			"1vs1": "1 gegen 1",
+			"2vs2": "2 gegen 2"
+		},
+		"GameEndType": {
+			"Selection": "Spielende",
+			"Time": "Nach Ablauf der Zeit",
+			"Result": "Nach Anzahl Tore"
+		},
+		"UserSelection": {
+			"Selection": "Benutzerauswahl",
+			"Offense": "Angriff",
+			"Defense": "Verteidigung",
+			"Team1": "Mannschaft 1",
+			"Team2": "Mannschaft 2",
+			"ErrorMessage": "Für jede Position muss ein Spieler ausgewählt werden, jeder Spieler darf nur einmal vorkommen."
+		}
+	},
+	"Game": {
+		"Score": "Aktueller Spielstand:",
+		"EndOfGame": "Spiel beendet. Schlussstand:"
+	},
+	"Stats": {
+		"Stats": "Benutzerstatistiken",
+		"Username": "Benutzername",
+		"WinLossRatio": "Gewinnn-Quote",
+		"Goals": "Tore",
+		"Foeteli": "Föteli",
+		"OwnGoals": "Eigentore"
+	}
 }

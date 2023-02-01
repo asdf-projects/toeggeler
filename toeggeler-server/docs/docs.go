@@ -42,7 +42,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.AuthenResponse"
+                        }
                     }
                 }
             }
@@ -104,7 +107,7 @@ const docTemplate = `{
                 "tags": [
                     "Stats"
                 ],
-                "summary": "Get statistics for all availabl users (FAKE DATA)",
+                "summary": "Get statistics for all available users (FAKE DATA)",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -344,6 +347,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.AuthenResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
                     "type": "string"
                 }
             }

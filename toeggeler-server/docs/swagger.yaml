@@ -10,6 +10,11 @@ definitions:
     - password
     - username
     type: object
+  controllers.AuthenResponse:
+    properties:
+      token:
+        type: string
+    type: object
   controllers.CreateUserRequest:
     properties:
       mail:
@@ -165,6 +170,8 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/controllers.AuthenResponse'
       summary: Authenticate by username and password
       tags:
       - Authenticate
@@ -212,7 +219,7 @@ paths:
             items:
               $ref: '#/definitions/controllers.Stats'
             type: array
-      summary: Get statistics for all availabl users (FAKE DATA)
+      summary: Get statistics for all available users (FAKE DATA)
       tags:
       - Stats
   /stats/{id}:

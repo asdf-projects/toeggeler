@@ -21,15 +21,18 @@ type AuthenRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type AuthenResponse struct {
+	Token string `json:"token"`
+}
+
 // Authenticate godoc
 // @Summary      Authenticate by username and password
 // @Description  Authenticate (Passwords for all available users is "1234")
 // @Tags         Authenticate
 // @Accept       json
 // @Produce      json
-// @Header       200  {string}  Token     "token"
 // @Param        Credentials body AuthenRequest true  "User credentials"
-// @Success      200
+// @Success      200 {object} AuthenResponse
 // @Router       /authenticate [post]
 func (s SecurityController) Authenticate(c *gin.Context) {
 	var authenRequest AuthenRequest
@@ -53,7 +56,9 @@ func (s SecurityController) Authenticate(c *gin.Context) {
 			return
 		}
 
-		c.Header("Authorization", "Bearer "+token)
+		authenResponse := AuthenResponse{Token: token}
+
+		c.JSON(http.StatusOK, authenResponse)
 	} else {
 		log.Println("blalba")
 		c.String(http.StatusUnauthorized, "Could not authenticate")

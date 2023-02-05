@@ -1,10 +1,15 @@
 {
+	"Home": {
+		"Welcome": "Hallo"
+	},
 	"Login": {
 		"Username": "Benutzername",
 		"Password": "Passwort",
 		"Login": "Einloggen",
 		"Signup": "Neuen Benutzer registrieren",
-		"ResetPassword": "Passwort zurücksetzen"
+		"ResetPassword": "Passwort zurücksetzen",
+		"LoginFailed": "Falscher Benutzername oder Passwort",
+		"GeneralError": "Es besteht ein Problem, Login ist momentan nicht möglich."
 	},
 	"Signup": {
 		"Username": "Benutzername",
@@ -61,5 +66,10 @@
 		"Goals": "Tore",
 		"Foeteli": "Föteli",
 		"OwnGoals": "Eigentore"
+	},
+	"Administration": {
+		"Username": "Benutzername",
+		"Email": "E-Mail",
+		"Save": "Änderungen übernehmen"
 	}
 }

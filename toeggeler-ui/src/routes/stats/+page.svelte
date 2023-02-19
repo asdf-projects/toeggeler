@@ -37,10 +37,12 @@
 			<Head>
 				<Row>
 					<Cell>{$_('Stats.Username')}</Cell>
+					<Cell>{$_('Stats.Games')}</Cell>
 					<Cell>{$_('Stats.WinLossRatio')}</Cell>
 					<Cell>{$_('Stats.Goals')}</Cell>
 					<Cell>{$_('Stats.Foeteli')}</Cell>
 					<Cell>{$_('Stats.OwnGoals')}</Cell>
+					<Cell>{$_('Stats.Rating')}</Cell>
 				</Row>
 			</Head>
 			<Body>
@@ -51,10 +53,12 @@
 								{username}
 							{/await}
 						</Cell>
+						<Cell>{statistic.wins + statistic.losses}</Cell>
 						<Cell>{statistic.winLossRatio}%</Cell>
 						<Cell>{statistic.goals}</Cell>
 						<Cell>{statistic.foetelis}</Cell>
 						<Cell>{statistic.ownGoals}</Cell>
+						<Cell>{statistic.rating}</Cell>
 					</Row>
 				{/each}
 			</Body>

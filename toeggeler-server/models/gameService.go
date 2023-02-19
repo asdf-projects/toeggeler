@@ -18,7 +18,7 @@ const (
 
 	getGamesPlayed = "SELECT game_id, cast(game_start AS INTEGER), cast(game_end AS INTEGER), team1_offense, team1_defense, team2_offense, team2_defense, team1_goals, team2_goals FROM games ORDER BY game_end ASC"
 
-	InsertGames       = "INSERT INTO games(game_id, game_start, game_end, team1_offense, team1_defense, team2_offense, team2_defense, team1_goals, team2_goals) VALUES "
+	InsertGames       = "INSERT INTO mat_view_games(game_id, game_start, game_end, duration, team1_defense, team2_offense, team2_defense, team1_goals, team2_goals) VALUES "
 	InsertPlayerStats = "INSERT INTO game_player_stats(game_id, player_id, team, position, teammate_id, won, goals, foetelis, own_goals, rating) VALUES "
 )
 
@@ -47,6 +47,7 @@ func (gs *GameService) GetGameEvents() (*[]GameEvent, error) {
 	return &events, nil
 }
 
+/*
 func (gs *GameService) GetGamesPlayed() (*[]Game, error) {
 	rows, err := gs.DB.Query(getGamesPlayed)
 	if err != nil {
@@ -86,6 +87,7 @@ func (gs *GameService) InsertGames(games []Game) error {
 	return nil
 }
 
+/*
 func (gs *GameService) InsertPlayerStats(games []Game) error {
 	insertPlayerStatsQuery := InsertPlayerStats
 
@@ -154,6 +156,7 @@ func getValuesString(game Game, player int64) string {
 
 	return fmt.Sprintf(valuesTemplate, gameId, player, team, position, teamMate, hasWon, goals, foetelis, ownGoals, rating)
 }
+*/
 
 func (gs *GameService) InsertGameEvents(gameId string, gameEvents *[]GameEvent) (*Game, error) {
 	var err error

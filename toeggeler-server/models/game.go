@@ -61,16 +61,18 @@ type Player struct {
 }
 
 type Game struct {
-	GameId      string
-	PlayerStats map[int64]*Player
-	Offense1    int64
-	Defense1    int64
-	Offense2    int64
-	Defense2    int64
-	GameStart   int64
-	GameEnd     int64
-	Team1Goals  int
-	Team2Goals  int
+	GameId         string
+	GameStart      int64
+	GameEnd        int64
+	Duration       int
+	team1_offense  int64
+	team1_defense  int64
+	team1_score    int
+	team2_offense  int64
+	team2_defense  int64
+	team2_score    int
+	winner_offense int64
+	winner_defense int64
 }
 
 func (g *GameEventType) UnmarshalJSON(b []byte) error {

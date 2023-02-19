@@ -6,11 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/segmentio/ksuid"
+	"github.com/steinm91/toeggeler/toeggeler-server/eval"
 	"github.com/steinm91/toeggeler/toeggeler-server/models"
 )
 
 type GameController struct {
 	GameService *models.GameService
+	EvalEngine  *eval.EvalEngine
 }
 
 type Score struct {
@@ -82,6 +84,11 @@ func (gameCtrl GameController) SubmitGame(c *gin.Context) {
 }
 
 func (gameCtrl GameController) GetGamesPlayed(c *gin.Context) {
+	c.JSON(http.StatusOK, gameCtrl.EvalEngine.GetGames())
+}
+
+/*
+func (gameCtrl GameController) GetGamesPlayed(c *gin.Context) {
 	gamesPlayed, err := gameCtrl.GameService.GetGamesPlayed()
 
 	if err != nil {
@@ -113,6 +120,7 @@ func (gameCtrl GameController) GetGamesPlayed(c *gin.Context) {
 
 	c.JSON(http.StatusOK, games)
 }
+*/
 
 func (gameCtrl GameController) ClearGames(c *gin.Context) {
 	err := gameCtrl.GameService.ClearGamesTable()

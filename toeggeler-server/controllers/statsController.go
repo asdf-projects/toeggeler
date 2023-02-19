@@ -15,18 +15,8 @@ type StatsController struct {
 	EvalEngine  *eval.EvalEngine
 }
 
-type Stats struct {
-	PlayerId int64 `json:"playerId"`
-	Rating   int   `json:"rating"`
-	Wins     int   `json:"wins"`
-	Losses   int   `json:"losses"`
-	Goals    int   `json:"goals"`
-	Foetelis int   `json:"foetelis"`
-	OwnGoals int   `json:"ownGoals"`
-}
-
 // GetStats godoc
-// @Summary      Get statistics for all available users (FAKE DATA)
+// @Summary      Get statistics for all available users
 // @Description  Get statistics for all available users
 // @Tags		 Stats
 // @Accept       json
@@ -34,12 +24,12 @@ type Stats struct {
 // @Success      200  {object}  []Stats
 // @Router       /stats [get]
 func (ctrl StatsController) GetStats(c *gin.Context) {
-	stats := getFakeStats()
+	stats := ctrl.EvalEngine.GetStats()
 	c.JSON(http.StatusOK, stats)
 }
 
 // GetStatsForUser godoc
-// @Summary      Get statistics for a user (FAKE DATA, available IDs: 1, 2, 3, 4)
+// @Summary      Get statistics for a user
 // @Description  Get statistics for a user
 // @Tags		 Stats
 // @Accept       json
@@ -49,24 +39,15 @@ func (ctrl StatsController) GetStats(c *gin.Context) {
 // @Failure      404
 // @Router       /stats/{id} [get]
 func (ctrl StatsController) GetStatsForPlayer(c *gin.Context) {
-	stats := getFakeStats()
+	stats := ctrl.EvalEngine.GetStats()
 
-	id, _ := strconv.Atoi(c.Param(("id")))
-
-	if (id - 1) > len(stats) {
-		c.String(http.StatusNotFound, "Player not found")
-		return
+	var statsForPlayer eval.Stats
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	for i := range stats {
+		if stats[i].PlayerId == id {
+			statsForPlayer = stats[i]
+		}
 	}
 
-	statsForPlayer := stats[id-1]
 	c.JSON(http.StatusOK, statsForPlayer)
-}
-
-func getFakeStats() []Stats {
-	p1 := Stats{PlayerId: 1, Rating: 344, Wins: 15, Losses: 2, Goals: 34, Foetelis: 13, OwnGoals: 2}
-	p2 := Stats{PlayerId: 2, Rating: 494, Wins: 4, Losses: 11, Goals: 12, Foetelis: 0, OwnGoals: 3}
-	p3 := Stats{PlayerId: 3, Rating: 248, Wins: 7, Losses: 7, Goals: 11, Foetelis: 4, OwnGoals: 0}
-	p4 := Stats{PlayerId: 4, Rating: 465, Wins: 10, Losses: 5, Goals: 4, Foetelis: 1, OwnGoals: 0}
-
-	return []Stats{p1, p2, p3, p4}
 }

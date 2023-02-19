@@ -42,7 +42,6 @@ func StartApiServer(env *Env) {
 	userRoutes(env, unauthorized, authorized)
 	gameRoutes(env, unauthorized, authorized)
 	statsRoutes(env, unauthorized)
-	evalEngineRoutes(env, unauthorized)
 
 	r.Run()
 }
@@ -72,7 +71,7 @@ func userRoutes(env *Env, unauthorized *gin.RouterGroup, authorized *gin.RouterG
 
 func gameRoutes(env *Env, unauthorized *gin.RouterGroup, authorized *gin.RouterGroup) {
 	gameService := models.GameService{DB: env.DB}
-	gameCtrl := controllers.GameController{GameService: &gameService}
+	gameCtrl := controllers.GameController{GameService: &gameService, EvalEngine: &env.EvalEngine}
 
 	unauthorized.GET("/games", gameCtrl.GetGamesPlayed)
 	authorized.POST("/games", gameCtrl.SubmitGame)
@@ -84,19 +83,7 @@ func gameRoutes(env *Env, unauthorized *gin.RouterGroup, authorized *gin.RouterG
 }
 
 func statsRoutes(env *Env, unauthorized *gin.RouterGroup) {
-	statsCtrl := controllers.StatsController{}
+	statsCtrl := controllers.StatsController{EvalEngine: &env.EvalEngine}
 	unauthorized.GET("/stats", statsCtrl.GetStats)
 	unauthorized.GET("/stats/:id", statsCtrl.GetStatsForPlayer)
-}
-
-func evalEngineRoutes(env *Env, unauthorized *gin.RouterGroup) {
-	gameService := models.GameService{DB: env.DB}
-	userService := models.UserService{DB: env.DB}
-	evalController := controllers.EvalController{
-		GameService: &gameService,
-		UserService: &userService,
-		EvalEngine:  &env.EvalEngine,
-	}
-
-	unauthorized.POST("/eval", evalController.Eval)
 }

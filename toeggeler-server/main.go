@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pelletier/go-toml"
@@ -58,6 +59,9 @@ func main() {
 	if envVars.DevMode {
 		log.SetFlags(log.LstdFlags | log.Lshortfile)
 	}
+
+	loc, _ := time.LoadLocation("Europe/Zurich")
+	time.Local = loc
 
 	db, err := models.Open(envVars.DBFile)
 	if err != nil {

@@ -41,7 +41,7 @@
 			</HelperText>
 		</Textfield>
 	</span>
-	<Textfield type="password" bind:value={password} label="Passwort" />
+	<Textfield type="password" bind:value={password} label={$_('Signup.Password')} />
 	<Button class="action-button" on:click={onClickSave}>
 		<Label>{$_('Signup.Save')}</Label>
 	</Button>

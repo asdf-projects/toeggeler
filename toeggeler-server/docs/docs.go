@@ -107,14 +107,14 @@ const docTemplate = `{
                 "tags": [
                     "Stats"
                 ],
-                "summary": "Get statistics for all available users (FAKE DATA)",
+                "summary": "Get statistics for all available users",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/controllers.Stats"
+                                "$ref": "#/definitions/eval.Stats"
                             }
                         }
                     }
@@ -133,7 +133,7 @@ const docTemplate = `{
                 "tags": [
                     "Stats"
                 ],
-                "summary": "Get statistics for a user (FAKE DATA, available IDs: 1, 2, 3, 4)",
+                "summary": "Get statistics for a user",
                 "parameters": [
                     {
                         "type": "integer",
@@ -147,7 +147,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.Stats"
+                            "$ref": "#/definitions/eval.Stats"
                         }
                     },
                     "404": {
@@ -412,7 +412,29 @@ const docTemplate = `{
                 }
             }
         },
-        "controllers.Stats": {
+        "controllers.Team": {
+            "type": "object",
+            "properties": {
+                "defense": {
+                    "type": "integer"
+                },
+                "offense": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controllers.UpdateUserRequest": {
+            "type": "object",
+            "required": [
+                "mail"
+            ],
+            "properties": {
+                "mail": {
+                    "type": "string"
+                }
+            }
+        },
+        "eval.Stats": {
             "type": "object",
             "properties": {
                 "foetelis": {
@@ -435,28 +457,6 @@ const docTemplate = `{
                 },
                 "wins": {
                     "type": "integer"
-                }
-            }
-        },
-        "controllers.Team": {
-            "type": "object",
-            "properties": {
-                "defense": {
-                    "type": "integer"
-                },
-                "offense": {
-                    "type": "integer"
-                }
-            }
-        },
-        "controllers.UpdateUserRequest": {
-            "type": "object",
-            "required": [
-                "mail"
-            ],
-            "properties": {
-                "mail": {
-                    "type": "string"
                 }
             }
         },

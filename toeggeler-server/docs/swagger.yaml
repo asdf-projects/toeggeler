@@ -50,7 +50,21 @@ definitions:
       team2:
         type: integer
     type: object
-  controllers.Stats:
+  controllers.Team:
+    properties:
+      defense:
+        type: integer
+      offense:
+        type: integer
+    type: object
+  controllers.UpdateUserRequest:
+    properties:
+      mail:
+        type: string
+    required:
+    - mail
+    type: object
+  eval.Stats:
     properties:
       foetelis:
         type: integer
@@ -66,20 +80,6 @@ definitions:
         type: integer
       wins:
         type: integer
-    type: object
-  controllers.Team:
-    properties:
-      defense:
-        type: integer
-      offense:
-        type: integer
-    type: object
-  controllers.UpdateUserRequest:
-    properties:
-      mail:
-        type: string
-    required:
-    - mail
     type: object
   models.GameEvent:
     description: Game event description
@@ -217,9 +217,9 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/controllers.Stats'
+              $ref: '#/definitions/eval.Stats'
             type: array
-      summary: Get statistics for all available users (FAKE DATA)
+      summary: Get statistics for all available users
       tags:
       - Stats
   /stats/{id}:
@@ -239,10 +239,10 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controllers.Stats'
+            $ref: '#/definitions/eval.Stats'
         "404":
           description: Not Found
-      summary: 'Get statistics for a user (FAKE DATA, available IDs: 1, 2, 3, 4)'
+      summary: Get statistics for a user
       tags:
       - Stats
   /users:

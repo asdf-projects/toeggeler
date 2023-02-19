@@ -21,7 +21,7 @@ type StatsController struct {
 // @Tags		 Stats
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  []Stats
+// @Success      200  {object}  []eval.Stats
 // @Router       /stats [get]
 func (ctrl StatsController) GetStats(c *gin.Context) {
 	stats := ctrl.EvalEngine.GetStats()
@@ -35,7 +35,7 @@ func (ctrl StatsController) GetStats(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param		 id path int true "User ID"
-// @Success      200  {object} Stats
+// @Success      200  {object} eval.Stats
 // @Failure      404
 // @Router       /stats/{id} [get]
 func (ctrl StatsController) GetStatsForPlayer(c *gin.Context) {

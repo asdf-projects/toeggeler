@@ -11,13 +11,17 @@
 	import ContentSave from 'svelte-material-icons/ContentSave.svelte';
 
 	let username: string;
-	let userData: IUser;
+    let userData: IUser;
+
+    let dirty: boolean;
+    let invalid: boolean;
 
 	onMount(async () => {
 		username = get(loggedInUser);
 		if (username === '') {
 			await goto('/login');
 		}
+        userData = await getUserData(username);
 	});
 	const getUserData = async (username: string): Promise<IUser> => {
 		const response = await fetch('http://localhost:8000/api/users', {
@@ -26,16 +30,27 @@
 		const users: IUser[] = await response.json();
 		return users.filter((user) => user.username === username)[0];
 	};
+
+    const updateUser = async (userData: IUser): Promise<IUser> => {
+        const response = await fetch(`http://localhost:8000/api/users/${userData.id}`, {
+            method: 'PUT',
+            body: JSON.stringify(userData)
+        });
+        dirty = false;
+        return await response.json();
+    };
 </script>
 
 <div>
-	{#await getUserData(username) then userData}
+	{#if userData}
 		<Textfield bind:value={username} label={$_('Signup.Username')} disabled />
-		<span class="email">
+		<div class="email">
 			<Textfield
 				type="email"
+                bind:dirty
+                bind:invalid
 				updateInvalid
-				value={userData.mail}
+				bind:value={userData.mail}
 				label={$_('Signup.Email')}
 				input$autocomplete="email"
 			>
@@ -43,8 +58,8 @@
 					{$_('Signup.InvalidEmail')}
 				</HelperText>
 			</Textfield>
-		</span>
-		<Button>
+		</div>
+		<Button on:click={updateUser(userData)} disabled={!dirty||invalid}>
 			<Icon>
 				<ContentSave />
 			</Icon>
@@ -52,5 +67,5 @@
 				{$_('Administration.Save')}
 			</Label>
 		</Button>
-	{/await}
+	{/if}
 </div>

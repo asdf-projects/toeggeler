@@ -22,7 +22,8 @@
 		"Play": "Spielen",
 		"Stats": "Statistiken",
 		"Users": "Benutzer",
-		"Administration": "Benutzer-Administration"
+		"Administration": "Benutzer-Administration",
+      "Logout": "Ausloggen"
 	},
 	"Users": {
 		"StatsFor": "Benutzerstatistik für",

@@ -7,6 +7,7 @@
 	import Trophy from 'svelte-material-icons/Trophy.svelte';
 	import AccountGroup from 'svelte-material-icons/AccountGroup.svelte';
 	import AccountCircle from 'svelte-material-icons/AccountCircle.svelte';
+	import LogoutVariant from 'svelte-material-icons/LogoutVariant.svelte';
 
 	let tabs = [
 		{
@@ -28,7 +29,12 @@
 			icon: 'AccountCircle',
 			label: 'Menu.Administration',
 			target: '/administration'
-		}
+		},
+        {
+            icon: 'LogoutVariant',
+            label: 'Menu.Logout',
+            target: '/logout'
+        }
 	];
 	let active;
 </script>
@@ -52,6 +58,9 @@
 					{#if tab.icon === 'AccountGroup'}
 						<AccountGroup />
 					{/if}
+                    {#if tab.icon === 'LogoutVariant'}
+                        <LogoutVariant />
+                    {/if}
 				</Icon>
 				<Label>{$_(tab.label)}</Label>
 			</Tab>

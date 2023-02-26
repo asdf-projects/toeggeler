@@ -6,9 +6,8 @@
 	import Login from 'svelte-material-icons/Login.svelte';
 	import { loggedInUser, sessionToken } from '../../shared/dataStore';
 	import { goto } from '$app/navigation';
-    import {page} from "$app/stores";
-    import ErrorMessage from "../../shared/ErrorMessage.svelte";
-    import {getErrorMessage} from "../../shared/utils";
+	import ErrorMessage from '../../shared/ErrorMessage.svelte';
+	import { getErrorMessage } from '../../shared/utils';
 
 	let username = '';
 	let password = '';
@@ -19,7 +18,7 @@
 	}
 
 	const login = async () => {
-        errorMessage = '';
+		errorMessage = '';
 		const loginData = { username, password };
 		const response = await fetch('http://localhost:8000/api/authenticate', {
 			method: 'POST',
@@ -32,8 +31,8 @@
 				await goto('/');
 			}
 		} else {
-            errorMessage = getErrorMessage(response);
-        }
+			errorMessage = getErrorMessage(response);
+		}
 	};
 
 	const storeSessionData = (loginToken: string): boolean => {
@@ -56,7 +55,11 @@
 <form>
 	<Textfield bind:value={username} label={$_('Login.Username')} />
 	<Textfield type="password" bind:value={password} label={$_('Login.Password')} />
-	<Button class="action-button" on:click={login} disabled={username.length===0||password.length===0}>
+	<Button
+		class="action-button"
+		on:click={login}
+		disabled={username.length === 0 || password.length === 0}
+	>
 		<Icon>
 			<Login />
 		</Icon>

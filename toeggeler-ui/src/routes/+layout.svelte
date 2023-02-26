@@ -30,11 +30,11 @@
 			label: 'Menu.Administration',
 			target: '/administration'
 		},
-        {
-            icon: 'LogoutVariant',
-            label: 'Menu.Logout',
-            target: '/logout'
-        }
+		{
+			icon: 'LogoutVariant',
+			label: 'Menu.Logout',
+			target: '/logout'
+		}
 	];
 	let active;
 </script>
@@ -58,9 +58,9 @@
 					{#if tab.icon === 'AccountGroup'}
 						<AccountGroup />
 					{/if}
-                    {#if tab.icon === 'LogoutVariant'}
-                        <LogoutVariant />
-                    {/if}
+					{#if tab.icon === 'LogoutVariant'}
+						<LogoutVariant />
+					{/if}
 				</Icon>
 				<Label>{$_(tab.label)}</Label>
 			</Tab>

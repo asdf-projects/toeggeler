@@ -21,7 +21,7 @@
 		"Stats": "Statistiken",
 		"Users": "Benutzer",
 		"Administration": "Benutzer-Administration",
-      "Logout": "Ausloggen"
+		"Logout": "Ausloggen"
 	},
 	"Users": {
 		"StatsFor": "Benutzerstatistik für",
@@ -73,9 +73,9 @@
 		"Email": "E-Mail",
 		"Save": "Änderungen übernehmen"
 	},
-  "Error": {
-    "InvalidInput": "Ungültige Eingabe",
-    "LoginFailed": "Falscher Benutzername oder Passwort",
-    "General": "Ein unbekanntes Problem ist aufgetreten"
-  }
+	"Error": {
+		"InvalidInput": "Ungültige Eingabe",
+		"LoginFailed": "Falscher Benutzername oder Passwort",
+		"General": "Ein unbekanntes Problem ist aufgetreten"
+	}
 }

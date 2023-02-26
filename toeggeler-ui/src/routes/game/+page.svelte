@@ -7,7 +7,7 @@
 	import Soccer from 'svelte-material-icons/Soccer.svelte';
 	import SoccerField from 'svelte-material-icons/SoccerField.svelte';
 	import { page } from '$app/stores';
-    import type {ITeam, IUser} from '../../app';
+	import type { ITeam, IUser } from '../../app';
 
 	enum EventType {
 		GAME_START = 'GAME_START',

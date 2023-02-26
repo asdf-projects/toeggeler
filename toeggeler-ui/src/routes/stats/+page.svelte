@@ -2,15 +2,15 @@
 	import { _ } from 'svelte-i18n';
 	import DataTable, { Head, Body, Row, Cell } from '@smui/data-table';
 	import type { IStatistic } from '../../app';
-    import {onMount} from "svelte";
-    import {get} from "svelte/store";
-    import {loggedInUser} from "../../shared/dataStore";
+	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import { loggedInUser } from '../../shared/dataStore';
 
-    let username;
+	let username;
 
-    onMount(async () => {
-        username = get(loggedInUser);
-    });
+	onMount(async () => {
+		username = get(loggedInUser);
+	});
 
 	const getUserStats = async (): Promise<IStatistic[] & { winLossRatio: number }> => {
 		const response = await fetch('http://localhost:8000/api/stats', {
@@ -53,20 +53,20 @@
 					<Cell>{$_('Stats.OwnGoals')}</Cell>
 					<Cell>{$_('Stats.Rating')}</Cell>
 				</Row>
-            </Head>
+			</Head>
 			<Body>
 				{#each statistics as statistic}
-                    {#await getUsername(statistic.playerId) then usernameOfPlayer}
-                        <Row selected={usernameOfPlayer == username}>
-                            <Cell>{usernameOfPlayer}</Cell>
-                            <Cell>{statistic.wins + statistic.losses}</Cell>
-                            <Cell>{statistic.winLossRatio}%</Cell>
-                            <Cell>{statistic.goals}</Cell>
-                            <Cell>{statistic.foetelis}</Cell>
-                            <Cell>{statistic.ownGoals}</Cell>
-                            <Cell>{statistic.rating}</Cell>
-                        </Row>
-                    {/await}
+					{#await getUsername(statistic.playerId) then usernameOfPlayer}
+						<Row selected={usernameOfPlayer == username}>
+							<Cell>{usernameOfPlayer}</Cell>
+							<Cell>{statistic.wins + statistic.losses}</Cell>
+							<Cell>{statistic.winLossRatio}%</Cell>
+							<Cell>{statistic.goals}</Cell>
+							<Cell>{statistic.foetelis}</Cell>
+							<Cell>{statistic.ownGoals}</Cell>
+							<Cell>{statistic.rating}</Cell>
+						</Row>
+					{/await}
 				{/each}
 			</Body>
 		</DataTable>
@@ -74,7 +74,7 @@
 </div>
 
 <style>
-    :global([selected="true"]) {
-        background-color: palegreen;
-    }
+	:global([selected='true']) {
+		background-color: palegreen;
+	}
 </style>

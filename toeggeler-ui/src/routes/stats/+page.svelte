@@ -2,6 +2,15 @@
 	import { _ } from 'svelte-i18n';
 	import DataTable, { Head, Body, Row, Cell } from '@smui/data-table';
 	import type { IStatistic } from '../../app';
+	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import { loggedInUser } from '../../shared/dataStore';
+
+	let username;
+
+	onMount(async () => {
+		username = get(loggedInUser);
+	});
 
 	const getUserStats = async (): Promise<IStatistic[] & { winLossRatio: number }> => {
 		const response = await fetch('http://localhost:8000/api/stats', {
@@ -47,21 +56,25 @@
 			</Head>
 			<Body>
 				{#each statistics as statistic}
-					<Row>
-						<Cell>
-							{#await getUsername(statistic.playerId) then username}
-								{username}
-							{/await}
-						</Cell>
-						<Cell>{statistic.wins + statistic.losses}</Cell>
-						<Cell>{statistic.winLossRatio}%</Cell>
-						<Cell>{statistic.goals}</Cell>
-						<Cell>{statistic.foetelis}</Cell>
-						<Cell>{statistic.ownGoals}</Cell>
-						<Cell>{statistic.rating}</Cell>
-					</Row>
+					{#await getUsername(statistic.playerId) then usernameOfPlayer}
+						<Row selected={usernameOfPlayer == username}>
+							<Cell>{usernameOfPlayer}</Cell>
+							<Cell>{statistic.wins + statistic.losses}</Cell>
+							<Cell>{statistic.winLossRatio}%</Cell>
+							<Cell>{statistic.goals}</Cell>
+							<Cell>{statistic.foetelis}</Cell>
+							<Cell>{statistic.ownGoals}</Cell>
+							<Cell>{statistic.rating}</Cell>
+						</Row>
+					{/await}
 				{/each}
 			</Body>
 		</DataTable>
 	{/await}
 </div>
+
+<style>
+	:global([selected='true']) {
+		background-color: palegreen;
+	}
+</style>

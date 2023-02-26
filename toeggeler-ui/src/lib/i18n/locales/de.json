@@ -7,9 +7,7 @@
 		"Password": "Passwort",
 		"Login": "Einloggen",
 		"Signup": "Neuen Benutzer registrieren",
-		"ResetPassword": "Passwort zurücksetzen",
-		"LoginFailed": "Falscher Benutzername oder Passwort",
-		"GeneralError": "Es besteht ein Problem, Login ist momentan nicht möglich."
+		"ResetPassword": "Passwort zurücksetzen"
 	},
 	"Signup": {
 		"Username": "Benutzername",
@@ -23,7 +21,7 @@
 		"Stats": "Statistiken",
 		"Users": "Benutzer",
 		"Administration": "Benutzer-Administration",
-      "Logout": "Ausloggen"
+		"Logout": "Ausloggen"
 	},
 	"Users": {
 		"StatsFor": "Benutzerstatistik für",
@@ -74,5 +72,10 @@
 		"Username": "Benutzername",
 		"Email": "E-Mail",
 		"Save": "Änderungen übernehmen"
+	},
+	"Error": {
+		"InvalidInput": "Ungültige Eingabe",
+		"LoginFailed": "Falscher Benutzername oder Passwort",
+		"General": "Ein unbekanntes Problem ist aufgetreten"
 	}
 }

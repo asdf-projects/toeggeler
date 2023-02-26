@@ -6,6 +6,9 @@
 	import Login from 'svelte-material-icons/Login.svelte';
 	import { loggedInUser, sessionToken } from '../../shared/dataStore';
 	import { goto } from '$app/navigation';
+    import {page} from "$app/stores";
+    import ErrorMessage from "../../shared/ErrorMessage.svelte";
+    import {getErrorMessage} from "../../shared/utils";
 
 	let username = '';
 	let password = '';
@@ -16,6 +19,7 @@
 	}
 
 	const login = async () => {
+        errorMessage = '';
 		const loginData = { username, password };
 		const response = await fetch('http://localhost:8000/api/authenticate', {
 			method: 'POST',
@@ -27,21 +31,19 @@
 			if (storeSessionData(loginResponse.token)) {
 				await goto('/');
 			}
-		} else if (response.status === 401) {
-			errorMessage = $_('Login.LoginFailed');
-			return;
-		}
-		errorMessage = $_('Login.GeneralError');
+		} else {
+            errorMessage = getErrorMessage(response);
+        }
 	};
 
 	const storeSessionData = (loginToken: string): boolean => {
 		if (!verifyToken(loginToken)) {
 			return false;
 		}
-		sessionToken.update(() => loginToken);
+		sessionToken.set(loginToken);
 		const jwtPayloadEncoded = loginToken.split('.')[1];
 		const jwtPayload = JSON.parse(atob(jwtPayloadEncoded));
-		loggedInUser.update(() => jwtPayload.username);
+		loggedInUser.set(jwtPayload.username);
 		return true;
 	};
 
@@ -54,15 +56,13 @@
 <form>
 	<Textfield bind:value={username} label={$_('Login.Username')} />
 	<Textfield type="password" bind:value={password} label={$_('Login.Password')} />
-	<Button class="action-button" on:click={login}>
+	<Button class="action-button" on:click={login} disabled={username.length===0||password.length===0}>
 		<Icon>
 			<Login />
 		</Icon>
 		<Label>{$_('Login.Login')}</Label>
 	</Button>
-	{#if errorMessage.length > 0}
-		<p>{errorMessage}</p>
-	{/if}
+	<ErrorMessage bind:text={errorMessage} />
 </form>
 <Button class="action-button" on:click={async () => await goto('/signup')}>
 	<Icon>

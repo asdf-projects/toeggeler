@@ -9,6 +9,8 @@
 	import HelperText from '@smui/textfield/helper-text';
 	import Button, { Icon, Label } from '@smui/button';
 	import ContentSave from 'svelte-material-icons/ContentSave.svelte';
+    import ErrorMessage from "../../shared/ErrorMessage.svelte";
+    import {getErrorMessage} from "../../shared/utils";
 
 	let username: string;
     let userData: IUser;
@@ -16,10 +18,12 @@
     let dirty: boolean;
     let invalid: boolean;
 
+    let errorMessage: string;
+
 	onMount(async () => {
 		username = get(loggedInUser);
 		if (username === '') {
-			await goto('/login');
+			await goto('/login', { replaceState: false, state: { name: '/administration' } });
 		}
         userData = await getUserData(username);
 	});
@@ -32,12 +36,23 @@
 	};
 
     const updateUser = async (userData: IUser): Promise<IUser> => {
-        const response = await fetch(`http://localhost:8000/api/users/${userData.id}`, {
+        errorMessage = '';
+        return fetch(`http://localhost:8000/api/users/${userData.id}`, {
             method: 'PUT',
             body: JSON.stringify(userData)
+        }).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                const error = (data && data.message) || getErrorMessage(response);
+                return Promise.reject(error);
+            }
+            dirty = false;
+            return data;
+        }).catch(error => {
+            errorMessage = error;
         });
-        dirty = false;
-        return await response.json();
     };
 </script>
 
@@ -67,5 +82,6 @@
 				{$_('Administration.Save')}
 			</Label>
 		</Button>
+        <ErrorMessage bind:text={errorMessage}></ErrorMessage>
 	{/if}
 </div>

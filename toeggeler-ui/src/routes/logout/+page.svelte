@@ -3,7 +3,7 @@
     import {loggedInUser, sessionToken} from "../../shared/dataStore";
 
     onMount(async () => {
-        sessionToken.update(() => '');
-        loggedInUser.update(() => '');
+        sessionToken.set('');
+        loggedInUser.set('');
     });
 </script>

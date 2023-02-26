@@ -92,14 +92,13 @@
 	<UserSelection bind:selectedUser={team2.defense} placeholder="Play.UserSelection.Defense" />
 
 	<div>
-		{#if isValidGame}
-			<Button class="action-button" on:click={startGame} disabled={!isValidGame}>
-				<Icon>
-					<Play />
-				</Icon>
-				<Label>{$_('Play.StartGame')}</Label>
-			</Button>
-		{:else}
+        <Button class="action-button" on:click={startGame} disabled={!isValidGame}>
+            <Icon>
+                <Play />
+            </Icon>
+            <Label>{$_('Play.StartGame')}</Label>
+        </Button>
+        {#if !isValidGame}
 			<p>{$_('Play.UserSelection.ErrorMessage')}</p>
 		{/if}
 	</div>

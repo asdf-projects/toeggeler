@@ -7,12 +7,8 @@
 	import Soccer from 'svelte-material-icons/Soccer.svelte';
 	import SoccerField from 'svelte-material-icons/SoccerField.svelte';
 	import { page } from '$app/stores';
-	import type { IUser } from '../../app';
+    import type {ITeam, IUser} from '../../app';
 
-	export interface ITeam {
-		offense: number;
-		defense: number;
-	}
 	enum EventType {
 		GAME_START = 'GAME_START',
 		GAME_END = 'GAME_END',
@@ -84,7 +80,7 @@
 			gameEnded = true;
 			shareGameResult(currentEvents);
 		}
-		mouseDownTimerStart(undefined);
+		mouseDownTimerStart(undefined as number);
 	};
 	const storeEvent = (event: IGameEvent) => {
 		console.log(JSON.stringify(event));

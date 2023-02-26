@@ -30,6 +30,8 @@ func StartApiServer(env *Env) {
 
 	r := gin.Default()
 
+	r.Static("/assets", "./assets")
+
 	unauthorized := r.Group("/api")
 	swaggerRoutes(env, unauthorized)
 	securityRoutes(env, unauthorized)

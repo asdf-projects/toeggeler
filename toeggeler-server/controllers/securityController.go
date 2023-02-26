@@ -44,15 +44,18 @@ func (s SecurityController) Authenticate(c *gin.Context) {
 
 	hashedPassword, err := s.UserService.GetUserPassword(authenRequest.Username)
 	if err != nil {
-		log.Println(err)
-		c.String(http.StatusUnauthorized, "Could not authenticate")
+		log.Println("Could not authenticate: ", err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": ErrAuthenticate})
 		return
 	}
 
 	if compareHashAndPassword(*hashedPassword, authenRequest.Password) {
-		token, err := s.generateJWT(authenRequest.Username)
+		user, _ := s.UserService.GetUserByName(authenRequest.Username)
+
+		token, err := s.generateJWT(*user)
 		if err != nil {
-			c.String(http.StatusInternalServerError, "Could not generate JWT token")
+			log.Println("Could not generate JWT token: ", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": ErrGenericError})
 			return
 		}
 
@@ -60,8 +63,8 @@ func (s SecurityController) Authenticate(c *gin.Context) {
 
 		c.JSON(http.StatusOK, authenResponse)
 	} else {
-		log.Println("blalba")
-		c.String(http.StatusUnauthorized, "Could not authenticate")
+		log.Println("Password validation failed.")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": ErrAuthenticate})
 	}
 }
 
@@ -78,14 +81,15 @@ func compareHashAndPassword(hash string, password string) bool {
 	return true
 }
 
-func (s SecurityController) generateJWT(username string) (string, error) {
+func (s SecurityController) generateJWT(user models.User) (string, error) {
 	secretKey := []byte(s.SecretKey)
 
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 
 	claims["authorized"] = true
-	claims["username"] = username
+	claims["username"] = user.Username
+	claims["id"] = user.Id
 	claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
 
 	tokenString, err := token.SignedString(secretKey)

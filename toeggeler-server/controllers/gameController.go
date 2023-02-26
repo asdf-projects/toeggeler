@@ -52,12 +52,12 @@ func (gameCtrl GameController) SubmitGame(c *gin.Context) {
 	var gameEvents []models.GameEvent
 
 	if err := c.BindJSON(&gameEvents); err != nil {
-		c.String(http.StatusBadRequest, "Invalid payload")
+		c.JSON(http.StatusBadRequest, gin.H{"error": ErrInvalidPayload})
 	}
 
 	gameId, err = ksuid.NewRandom()
 	if err != nil {
-		c.String(http.StatusInternalServerError, "Could not submit game data")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrGenericError})
 		return
 	}
 
@@ -70,13 +70,13 @@ func (gameCtrl GameController) SubmitGame(c *gin.Context) {
 	}
 
 	if err != nil {
-		c.String(http.StatusBadRequest, "Invalid event provided")
+		c.JSON(http.StatusBadRequest, gin.H{"error": ErrInvalidEvent})
 		return
 	}
 
 	game, err := gameCtrl.GameService.InsertGameEvents(gameId.String(), &gameEvents)
 	if err != nil {
-		c.String(http.StatusInternalServerError, "Could not submit game data")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": ErrGenericError})
 		return
 	}
 
@@ -86,41 +86,6 @@ func (gameCtrl GameController) SubmitGame(c *gin.Context) {
 func (gameCtrl GameController) GetGamesPlayed(c *gin.Context) {
 	c.JSON(http.StatusOK, gameCtrl.EvalEngine.GetGames())
 }
-
-/*
-func (gameCtrl GameController) GetGamesPlayed(c *gin.Context) {
-	gamesPlayed, err := gameCtrl.GameService.GetGamesPlayed()
-
-	if err != nil {
-		c.String(http.StatusInternalServerError, "Could not retrieve games")
-	}
-
-	games := []Game{}
-	for _, g := range *gamesPlayed {
-		game := Game{
-			GameId:    g.GameId,
-			GameStart: g.GameStart,
-			GameEnd:   g.GameEnd,
-			Team1: Team{
-				Offense: g.Offense1,
-				Defense: g.Defense1,
-			},
-			Team2: Team{
-				Offense: g.Offense2,
-				Defense: g.Defense2,
-			},
-			Score: Score{
-				Team1: g.Team1Goals,
-				Team2: g.Team2Goals,
-			},
-		}
-
-		games = append(games, game)
-	}
-
-	c.JSON(http.StatusOK, games)
-}
-*/
 
 func (gameCtrl GameController) ClearGames(c *gin.Context) {
 	err := gameCtrl.GameService.ClearGamesTable()

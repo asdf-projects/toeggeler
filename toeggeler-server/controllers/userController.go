@@ -47,9 +47,10 @@ func (userCtrl UserController) CreateUser(c *gin.Context) {
 	)
 	if err != nil {
 		if errors.Is(err, models.ErrUserExists) {
-			c.String(http.StatusBadRequest, "User/E-Mail already exists")
+			c.JSON(http.StatusBadRequest, gin.H{"error": ErrUserExists})
 		} else {
-			c.String(http.StatusInternalServerError, "Could not create new user")
+			log.Println("Could not create user: ", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": ErrGenericError})
 		}
 		return
 	}
@@ -92,9 +93,10 @@ func (userCtrl UserController) GetUser(c *gin.Context) {
 	user, err := userCtrl.UserService.GetUser(id)
 	if err != nil {
 		if errors.Is(err, models.ErrUserNotFound) {
-			c.String(http.StatusNotFound, "User not found")
+			c.JSON(http.StatusNotFound, gin.H{"error": ErrUserNotFound})
 		} else {
-			c.String(http.StatusInternalServerError, "Could not get user")
+			log.Println("Could not get user: ", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": ErrGenericError})
 		}
 		return
 	}
@@ -119,15 +121,16 @@ func (userCtrl UserController) UpdateUser(c *gin.Context) {
 
 	var updateRequest UpdateUserRequest
 	if err := c.BindJSON(&updateRequest); err != nil {
-		c.String(http.StatusBadRequest, "Invalid payload")
+		c.JSON(http.StatusBadRequest, gin.H{"error": ErrInvalidPayload})
 	}
 
 	user, err := userCtrl.UserService.UpdateUser(id, updateRequest.Mail)
 	if err != nil {
 		if errors.Is(err, models.ErrUserExists) {
-			c.String(http.StatusBadRequest, "Mail already exists")
+			c.JSON(http.StatusBadRequest, gin.H{"error": ErrMailExists})
 		} else {
-			c.String(http.StatusInternalServerError, "Could not update user")
+			log.Println("Could not update user: ", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": ErrGenericError})
 		}
 		return
 	}
@@ -152,9 +155,10 @@ func (userCtrl UserController) DeleteUser(c *gin.Context) {
 	err := userCtrl.UserService.DeleteUser(id)
 	if err != nil {
 		if errors.Is(err, models.ErrUserNotFound) {
-			c.String(http.StatusBadRequest, "User not found")
+			c.JSON(http.StatusBadRequest, gin.H{"error": ErrUserNotFound})
 		} else {
-			c.String(http.StatusInternalServerError, "Could not delete user")
+			log.Println("Could not delete user: ", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": ErrGenericError})
 		}
 		return
 	}

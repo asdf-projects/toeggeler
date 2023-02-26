@@ -35,12 +35,13 @@ var ErrMailExists = errors.New("Mail already exists")
 var ErrUserNotFound = errors.New("User not found")
 
 const (
-	readUsersStmt  = "SELECT user_id, user_name, user_mail FROM users"
-	readUserStmt   = readUsersStmt + " WHERE user_id = ?"
-	readUserPwd    = "SELECT user_password FROM users WHERE user_name = ?"
-	createUserStmt = "INSERT INTO users(user_name, user_mail, user_password) values($1, $2, $3)"
-	updateUserStmt = "UPDATE users SET user_mail = ? WHERE user_id = ?"
-	deleteUserStmt = "DELETE FROM users WHERE user_id = ?"
+	readUsersStmt      = "SELECT user_id, user_name, user_mail FROM users"
+	readUserStmt       = readUsersStmt + " WHERE user_id = ?"
+	readUserByNameStmt = readUsersStmt + " WHERE user_name = ?"
+	readUserPwd        = "SELECT user_password FROM users WHERE user_name = ?"
+	createUserStmt     = "INSERT INTO users(user_name, user_mail, user_password) values($1, $2, $3)"
+	updateUserStmt     = "UPDATE users SET user_mail = ? WHERE user_id = ?"
+	deleteUserStmt     = "DELETE FROM users WHERE user_id = ?"
 )
 
 func (us *UserService) Create(name, mail, password string) (*User, error) {
@@ -109,6 +110,21 @@ func (us *UserService) GetUser(id string) (*User, error) {
 	}
 
 	return &user, nil
+}
+
+func (us *UserService) GetUserByName(username string) (*User, error) {
+	row := us.DB.QueryRow(readUserByNameStmt, username)
+
+	var user User
+	err := row.Scan(&user.Id, &user.Username, &user.Mail)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		return nil, err
+	}
+
+	return &user, err
 }
 
 func (us *UserService) GetUserPassword(username string) (*string, error) {

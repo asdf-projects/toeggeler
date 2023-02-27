@@ -38,7 +38,7 @@ func (s SecurityController) Authenticate(c *gin.Context) {
 	var authenRequest AuthenRequest
 
 	if err := c.BindJSON(&authenRequest); err != nil {
-		c.String(http.StatusBadRequest, "Invalid payload")
+		c.JSON(http.StatusBadRequest, gin.H{"error": ErrInvalidPayload})
 		return
 	}
 

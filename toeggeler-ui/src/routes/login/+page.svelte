@@ -31,7 +31,8 @@
 				await goto('/');
 			}
 		} else {
-			errorMessage = getErrorMessage(response);
+            const errorResponse = await response.json()
+			errorMessage = getErrorMessage(errorResponse);
 		}
 	};
 

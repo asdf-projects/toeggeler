@@ -42,11 +42,10 @@
 			body: JSON.stringify(userData)
 		})
 			.then(async (response) => {
-				const isJson = response.headers.get('content-type')?.includes('application/json');
-				const data = isJson ? await response.json() : null;
+				const data = await response.json();
 
 				if (!response.ok) {
-					const error = (data && data.message) || getErrorMessage(response);
+					const error = getErrorMessage(data);
 					return Promise.reject(error);
 				}
 				dirty = false;

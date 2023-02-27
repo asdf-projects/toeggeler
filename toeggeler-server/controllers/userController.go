@@ -36,7 +36,7 @@ func (userCtrl UserController) CreateUser(c *gin.Context) {
 	var userRequest CreateUserRequest
 
 	if err := c.BindJSON(&userRequest); err != nil {
-		c.JSON(http.StatusBadRequest, "Invalid object provided")
+		c.JSON(http.StatusBadRequest, gin.H{"error": ErrInvalidPayload})
 		return
 	}
 
@@ -122,6 +122,7 @@ func (userCtrl UserController) UpdateUser(c *gin.Context) {
 	var updateRequest UpdateUserRequest
 	if err := c.BindJSON(&updateRequest); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": ErrInvalidPayload})
+		return
 	}
 
 	user, err := userCtrl.UserService.UpdateUser(id, updateRequest.Mail)

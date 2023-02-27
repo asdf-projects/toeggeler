@@ -74,8 +74,13 @@
 		"Save": "Änderungen übernehmen"
 	},
 	"Error": {
-		"InvalidInput": "Ungültige Eingabe",
-		"LoginFailed": "Falscher Benutzername oder Passwort",
-		"General": "Ein unbekanntes Problem ist aufgetreten"
+      "authen-failed": "Falscher Benutzername oder falsches Passwort",
+      "user-not-found": "Dieser Benutzer existiert nicht",
+      "user-already-exists": "Ein Benutzer mit diesem Benutzernamen oder dieser E-Mail-Adresse ist bereits registriert",
+      "email-already-exists": "Diese E-Mail-Adresse wird bereits verwendet",
+      "email-invalid": "Ungültige E-Mail-Adresse",
+      "payload-invalid": "Ungültige Eingabe",
+      "event-invalid": "Ungültige Eingabe",
+      "internal-error": "Ein unbekannter Fehler ist aufgetreten."
 	}
 }

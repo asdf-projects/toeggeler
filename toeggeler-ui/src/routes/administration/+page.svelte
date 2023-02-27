@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { get } from 'svelte/store';
-	import { loggedInUser } from '../../shared/dataStore';
+    import {loggedInUserId, sessionToken} from '../../shared/dataStore';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import type { IUser } from '../../app';
@@ -12,7 +12,7 @@
 	import ErrorMessage from '../../shared/ErrorMessage.svelte';
 	import { getErrorMessage } from '../../shared/utils';
 
-	let username: string;
+	let userId: number;
 	let userData: IUser;
 
 	let dirty: boolean;
@@ -21,24 +21,27 @@
 	let errorMessage: string;
 
 	onMount(async () => {
-		username = get(loggedInUser);
-		if (username === '') {
-			await goto('/login', { replaceState: false, state: { name: '/administration' } });
+		userId = get(loggedInUserId);
+		if (userId === -1) {
+			await goto('/login');
 		}
-		userData = await getUserData(username);
+		userData = await getUserData(userId);
 	});
-	const getUserData = async (username: string): Promise<IUser> => {
-		const response = await fetch('http://localhost:8000/api/users', {
+
+	const getUserData = async (userId: number): Promise<IUser> => {
+		const response = await fetch(`http://localhost:8000/api/users/${userId}`, {
 			method: 'GET'
 		});
-		const users: IUser[] = await response.json();
-		return users.filter((user) => user.username === username)[0];
+		return await response.json();
 	};
 
 	const updateUser = async (userData: IUser): Promise<IUser> => {
 		errorMessage = '';
 		return fetch(`http://localhost:8000/api/users/${userData.id}`, {
 			method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${get(sessionToken)}`
+            },
 			body: JSON.stringify(userData)
 		})
 			.then(async (response) => {
@@ -59,7 +62,7 @@
 
 <div>
 	{#if userData}
-		<Textfield bind:value={username} label={$_('Signup.Username')} disabled />
+		<Textfield bind:value={userData.username} label={$_('Signup.Username')} disabled />
 		<div class="email">
 			<Textfield
 				type="email"

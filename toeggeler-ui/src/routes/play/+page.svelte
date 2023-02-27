@@ -9,6 +9,9 @@
 	import { goto } from '$app/navigation';
 	import type { ITeam } from '../../app';
 	import { page } from '$app/stores';
+    import {onMount} from "svelte";
+    import {get} from "svelte/store";
+    import {loggedInUserId} from "../../shared/dataStore";
 
 	const gameTypes = [
 		{
@@ -37,12 +40,21 @@
 	let team1: ITeam = { offense: undefined as number, defense: undefined as number };
 	let team2: ITeam = { offense: undefined as number, defense: undefined as number };
 
+    let userId: number;
+
 	$: isValidGame =
 		team1.offense &&
 		team1.defense &&
 		team2.offense &&
 		team2.defense &&
 		[...new Set([team1.offense, team1.defense, team2.offense, team2.defense])].length === 4;
+
+    onMount(async () => {
+        userId = get(loggedInUserId);
+        if (userId === -1) {
+            await goto('/login');
+        }
+    });
 
 	const startGame = async () => {
 		$page.url.searchParams.set('team1', JSON.stringify(team1));

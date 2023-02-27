@@ -8,6 +8,10 @@
 	import SoccerField from 'svelte-material-icons/SoccerField.svelte';
 	import { page } from '$app/stores';
 	import type { ITeam, IUser } from '../../app';
+    import {onMount} from "svelte";
+    import {get} from "svelte/store";
+    import {loggedInUserId, sessionToken} from "../../shared/dataStore";
+    import {goto} from "$app/navigation";
 
 	enum EventType {
 		GAME_START = 'GAME_START',
@@ -83,14 +87,16 @@
 		mouseDownTimerStart(undefined as number);
 	};
 	const storeEvent = (event: IGameEvent) => {
-		console.log(JSON.stringify(event));
 		currentEvents.push(event);
 	};
 
 	const shareGameResult = async (events: IGameEvent[]) => {
 		const response = await fetch('http://localhost:8000/api/games', {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${get(sessionToken)}`
+            },
 			body: JSON.stringify(events)
 		});
 		await response.json();

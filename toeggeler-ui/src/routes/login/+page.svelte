@@ -4,8 +4,8 @@
 	import Button, { Icon, Label } from '@smui/button';
 	import AccountPlus from 'svelte-material-icons/AccountPlus.svelte';
 	import Login from 'svelte-material-icons/Login.svelte';
-	import { loggedInUser, sessionToken } from '../../shared/dataStore';
-	import { goto } from '$app/navigation';
+    import {loggedInUser, loggedInUserId, sessionToken} from '../../shared/dataStore';
+    import {afterNavigate, goto} from '$app/navigation';
 	import ErrorMessage from '../../shared/ErrorMessage.svelte';
 	import { getErrorMessage } from '../../shared/utils';
 
@@ -13,9 +13,17 @@
 	let password = '';
 	let errorMessage = '';
 
+    let previousPage = '/';
+
 	export interface ILoginToken {
 		token: string;
 	}
+
+    afterNavigate(({from}) => {
+        if (from?.url?.pathname !== '/login') {
+            previousPage = from?.url?.pathname || '/';
+        }
+    })
 
 	const login = async () => {
 		errorMessage = '';
@@ -28,7 +36,7 @@
 		if (response.ok) {
 			const loginResponse: ILoginToken = await response.json();
 			if (storeSessionData(loginResponse.token)) {
-				await goto('/');
+				await goto(previousPage);
 			}
 		} else {
             const errorResponse = await response.json()
@@ -44,6 +52,7 @@
 		const jwtPayloadEncoded = loginToken.split('.')[1];
 		const jwtPayload = JSON.parse(atob(jwtPayloadEncoded));
 		loggedInUser.set(jwtPayload.username);
+        loggedInUserId.set(jwtPayload.id);
 		return true;
 	};
 

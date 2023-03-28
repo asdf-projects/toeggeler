@@ -37,7 +37,7 @@
 	const team2: ITeam = JSON.parse($page.url.searchParams.get('team2'));
 
 	const getPlayerData = async (id: number): Promise<IUser> => {
-		const response = await fetch(`http://localhost:8000/api/users`, {
+		const response = await fetch(`/api/users`, {
 			method: 'GET'
 		});
 		const users: IUser[] = await response.json();
@@ -91,7 +91,7 @@
 	};
 
 	const shareGameResult = async (events: IGameEvent[]) => {
-		const response = await fetch('http://localhost:8000/api/games', {
+		const response = await fetch('/api/games', {
 			method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

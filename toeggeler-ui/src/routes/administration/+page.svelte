@@ -29,7 +29,7 @@
 	});
 
 	const getUserData = async (userId: number): Promise<IUser> => {
-		const response = await fetch(`http://localhost:8000/api/users/${userId}`, {
+		const response = await fetch(`/api/users/${userId}`, {
 			method: 'GET'
 		});
 		return await response.json();
@@ -37,7 +37,7 @@
 
 	const updateUser = async (userData: IUser): Promise<IUser> => {
 		errorMessage = '';
-		return fetch(`http://localhost:8000/api/users/${userData.id}`, {
+		return fetch(`/api/users/${userData.id}`, {
 			method: 'PUT',
             headers: {
                 Authorization: `Bearer ${get(sessionToken)}`

@@ -28,7 +28,7 @@
 	const login = async () => {
 		errorMessage = '';
 		const loginData = { username, password };
-		const response = await fetch('http://localhost:8000/api/authenticate', {
+		const response = await fetch('/api/authenticate', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(loginData)

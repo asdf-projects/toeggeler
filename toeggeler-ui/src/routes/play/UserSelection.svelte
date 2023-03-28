@@ -7,7 +7,7 @@
 	export let placeholder: string;
 
 	const loadUsers = async (): Promise<IUser[]> => {
-		const response = await fetch('http://localhost:8000/api/users', {
+		const response = await fetch('/api/users', {
 			method: 'GET'
 		});
 		return await response.json();

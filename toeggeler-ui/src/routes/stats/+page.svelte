@@ -13,7 +13,7 @@
 	});
 
 	const getUserStats = async (): Promise<IStatistic[] & { winLossRatio: number }> => {
-		const response = await fetch('http://localhost:8000/api/stats', {
+		const response = await fetch('/api/stats', {
 			method: 'GET'
 		});
 		const userStatistics = await response.json();
@@ -31,7 +31,7 @@
 	};
 
 	const getUsername = async (userId): Promise<string> => {
-		const response = await fetch(`http://localhost:8000/api/users/${userId}`, {
+		const response = await fetch(`/api/users/${userId}`, {
 			method: 'GET'
 		});
 		const userDetail = await response.json();

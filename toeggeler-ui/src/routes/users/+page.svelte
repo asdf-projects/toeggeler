@@ -10,7 +10,7 @@
 	let selectedUser;
 
 	const loadUsers = async (): Promise<IUser[]> => {
-		const response = await fetch('http://localhost:8000/api/users', {
+		const response = await fetch('/api/users', {
 			method: 'GET'
 		});
 		return await response.json();
@@ -24,7 +24,7 @@
 	};
 
 	const loadUserStatistics = async (userId: string): Promise<IStatistic> => {
-		const response = await fetch(`http://localhost:8000/api/stats/${userId}`, {
+		const response = await fetch(`/api/stats/${userId}`, {
 			method: 'GET'
 		});
 		return await response.json();
